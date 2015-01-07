@@ -1,0 +1,41 @@
+{% extends 'layout.twig' %}
+
+{% block title %}AG Produtos || Listagem de Produtos{% endblock %}
+
+{% block content %}
+    <header class="container">
+        <h1>Listagem de Produtos</h1>
+    </header>
+    <section class="container">
+
+        {% if deleted %}
+            <span class="alert-danger">Produto removido com sucesso!</span>
+        {% endif %}
+        <table class="table table-hover">
+            <tbody>
+            <tr>
+                <td>Nome</td>
+                <td>Descrição</td>
+                <td>Valor</td>
+                <td>Ações</td>
+            </tr>
+            </tbody>
+            <tbody>
+            {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.descricao }}</td>
+                    <td>{{ produto.valor }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('produto-editar', {id: produto.id}) }}">Editar</a>
+                        <a class="btn btn-danger" href="{{ path('produto-deletar', {id: produto.id}) }}">Remover</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}
+
+{% block classhome %}{% endblock %}
+{% block classprodutos %}active{% endblock %}
