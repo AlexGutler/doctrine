@@ -22,8 +22,8 @@ $app['produto'] = function(){
     return new Produto();
 };
 //armazenando o mapper do produto
-$app['mapper'] = function() use ($app) {
-    return new ProdutoMapper($app['conn']);
+$app['mapper'] = function() use ($em) {
+    return new ProdutoMapper($em);
 };
 // armazenando a dependencia ao ProdutoValidator
 $app['produtoValidator'] = function(){

@@ -3,19 +3,22 @@
 namespace AG\Produto\Mapper;
 
 use AG\Produto\Entity\Produto;
+use Doctrine\ORM\EntityManager;
 
 class ProdutoMapper
 {
-    private $conn;
+    //private $conn;
+    private $em;
 
-    public function __construct(\PDO $conn)
+    public function __construct(/*\PDO $conn,*/ EntityManager $em)
     {
-        $this->conn = $conn;
+        //$this->conn = $conn;
+        $this->em = $em;
     }
 
     public function insert(Produto $produto)
     {
-        $sql = "INSERT INTO `produtos`(`nome`, `descricao`, `valor`) VALUES (:nome, :descricao, :valor);";
+        /* $sql = "INSERT INTO `produtos`(`nome`, `descricao`, `valor`) VALUES (:nome, :descricao, :valor);";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -23,12 +26,18 @@ class ProdutoMapper
         $stmt->bindValue(':descricao', $produto->getDescricao());
         $stmt->bindValue(':valor', $produto->getValor());
 
-        return $stmt->execute() ? true : false;
+        return $stmt->execute() ? true : false; */
+
+        $this->em->persist($produto);
+        $this->em->flush();
+
+        return $produto;
     }
 
     public function update(Produto $produto)
     {
-        $sql = "UPDATE `produtos` SET `nome`= :nome,
+        $this->em->find('produtos', $produto->getId());
+        /*$sql = "UPDATE `produtos` SET `nome`= :nome,
                `descricao`= :descricao,
                `valor`= :valor
                 WHERE `id`= :id;";
@@ -40,7 +49,11 @@ class ProdutoMapper
         $stmt->bindValue(':valor',$produto->getValor());
         $stmt->bindValue(':id', $produto->getId());
 
-        return $stmt->execute() ? true : false;
+        return $stmt->execute() ? true : false;*/
+        $this->em->persist($produto);
+        $this->em->flush();
+
+        return $produto;
     }
 
     public function delete($id)

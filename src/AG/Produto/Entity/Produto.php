@@ -2,12 +2,34 @@
 
 namespace AG\Produto\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="produtos")
+ */
 class Produto
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $nome;
+
+    /**
+     * @ORM\Column(type="text")
+     */
     private $descricao;
+
+    /**
+     * @ORM\Column(type="float", scale=2)
+     */
     private $valor;
 
 

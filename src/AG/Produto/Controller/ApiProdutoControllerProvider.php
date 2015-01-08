@@ -32,18 +32,19 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
         $controllers->post('/', function(Request $request) use($app) {
             $result = $app['produtoService']->insert($request);
 
-            if (!is_string($result)) {
-                return $app->json(['success'=> "Produto Cadastrado com Sucesso!"]);
+            if (!is_array($result)) {
+                return $app->json(['success' => "Produto Cadastrado com Sucesso!"]);
             } else {
                 return $app->json($result);
             }
+
         })->bind('api-produtos-cadastrar');
 
         // alterar
         $controllers->put("/{id}", function(Request $request, $id) use($app) {
             $result = $app['produtoService']->update($request, $id);
 
-            if (!is_string($result)) {
+            if (!is_array($result)) {
                 return $app->json(['success' => "Produto Alterado com Sucesso!"]);
             } else {
                 return $app->json($result);
