@@ -1,7 +1,11 @@
 <?php
-require_once __DIR__."/src/AG/config/connectionDB.php";
+require_once __DIR__ . "/src/AG/config/connectionPDO.php";
 
-$conn = connectionDB();
+$conn = connectionPDO();
+
+$conn->query("DROP SCHEMA IF EXISTS `silexdb`");
+$conn->query("CREATE SCHEMA `silexdb`");
+$conn->query("USE `silexdb`");
 
 $conn->query("DROP TABLE IF EXISTS `produtos`");
 
