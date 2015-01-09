@@ -44,7 +44,9 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
         $controllers->put("/{id}", function(Request $request, $id) use($app) {
             $result = $app['produtoService']->update($request, $id);
 
-            if (!is_array($result)) {
+            if(!$result) {
+                return $app->json(['erro' => 'Produto não encontrado!']);
+            }elseif (!is_array($result)) {
                 return $app->json(['success' => "Produto Alterado com Sucesso!"]);
             } else {
                 return $app->json($result);

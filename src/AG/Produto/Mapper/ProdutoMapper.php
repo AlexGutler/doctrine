@@ -7,27 +7,15 @@ use Doctrine\ORM\EntityManager;
 
 class ProdutoMapper
 {
-    //private $conn;
     private $em;
 
-    public function __construct(/*\PDO $conn,*/ EntityManager $em)
+    public function __construct(EntityManager $em)
     {
-        //$this->conn = $conn;
         $this->em = $em;
     }
 
     public function insert(Produto $produto)
     {
-        /* $sql = "INSERT INTO `produtos`(`nome`, `descricao`, `valor`) VALUES (:nome, :descricao, :valor);";
-
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->bindValue(':nome', $produto->getNome());
-        $stmt->bindValue(':descricao', $produto->getDescricao());
-        $stmt->bindValue(':valor', $produto->getValor());
-
-        return $stmt->execute() ? true : false; */
-
         $this->em->persist($produto);
         $this->em->flush();
 
@@ -36,53 +24,54 @@ class ProdutoMapper
 
     public function update(Produto $produto)
     {
-        $this->em->find('produtos', $produto->getId());
-        /*$sql = "UPDATE `produtos` SET `nome`= :nome,
-               `descricao`= :descricao,
-               `valor`= :valor
-                WHERE `id`= :id;";
-
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->bindValue(':nome', $produto->getNome());
-        $stmt->bindValue(':descricao', $produto->getDescricao());
-        $stmt->bindValue(':valor',$produto->getValor());
-        $stmt->bindValue(':id', $produto->getId());
-
-        return $stmt->execute() ? true : false;*/
-        $this->em->persist($produto);
-        $this->em->flush();
-
-        return $produto;
+        if ($this->em->find('AG\Produto\Entity\Produto', $produto->getId()))
+        {
+            $this->em->merge($produto);
+            $this->em->flush();
+            return $produto;
+        }
+        return false;
     }
 
     public function delete($id)
     {
-        $sql = "DELETE FROM `produtos` WHERE `id` = :id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $id);
+        $produto = ($this->em->find('AG\Produto\Entity\Produto', $id)) ? ($this->em->find('AG\Produto\Entity\Produto', $id)) : false;
 
-        return $stmt->execute() ? true : false;
+        if(!$produto)
+        {
+            return false;
+        }
+
+        $this->em->remove($produto);
+        $this->em->flush();
+        return true;
     }
 
 
     public function fetchAll()
     {
-        $sql = "SELECT * FROM `produtos`;";
-        $stmt = $this->conn->prepare($sql);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $produtos = $this->em->getRepository('AG\Produto\Entity\Produto')->findAll();
+        $data = array();
+        foreach ($produtos as $key => $produto)
+        {
+            $data[] = array(
+                'id' => $produto->getId(),
+                'nome' => $produto->getNome(),
+                'descricao' => $produto->getDescricao(),
+                'valor' => $produto->getValor()
+            );
+        }
+        return $data;
     }
 
     public function fetch($id)
     {
-        $sql = "SELECT * FROM `produtos` WHERE `id`=:id;";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id', $id);
-        $stmt->execute();
-
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $produto = $this->em->find('AG\Produto\Entity\Produto', $id);
+        return [
+            'id' => $produto->getId(),
+            'nome' => $produto->getNome(),
+            'descricao' => $produto->getDescricao(),
+            'valor' => $produto->getValor()
+        ];
     }
 }
