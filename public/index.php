@@ -30,8 +30,8 @@ $app['produtoValidator'] = function(){
   return new ProdutoValidator();
 };
 // armazenar o service do produto
-$app['produtoService'] = function() use ($app) {
-    return new ProdutoService($app['produto'], $app['mapper'], $app['produtoValidator']);
+$app['produtoService'] = function() use ($app, $em) {
+    return new ProdutoService($em, $app['produtoValidator']);
 };
 
 
