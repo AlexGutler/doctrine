@@ -8,15 +8,24 @@ class ProdutoRepository extends EntityRepository
 {
     public function getProdutosOrdenados()
     {
-        return $this
+        // QUERY BUILDER
+         return $this
             ->createQueryBuilder("p")
-            ->orderBy("p.id", 'asc')
+            ->orderBy("p.nome", 'asc')
             ->getQuery()
             ->getResult()
             ;
+
+       // DQL
+       /* $dql = "SELECT p FROM AG\Produto\Entity\Produto p ORDER BY p.nome";
+        return $this
+            ->getEntityManager()
+            ->createQuery($dql)
+            ->getResult()
+        ; */
     }
 
-    public function getClientesDesc()
+    public function getProdutosDesc()
     {
         $dql = "SELECT p FROM AG\Produto\Entity\Produto p
             ORDER BY p.nome DESC";
@@ -25,6 +34,17 @@ class ProdutoRepository extends EntityRepository
             ->getEntityManager()
             ->createQuery($dql)
             ->getResult()
-            ;
+        ;
+    }
+
+    public function getBuscarProdutos($options = array())
+    {
+        $dql = "SELECT p FROM AG\Produto\Entity\Produto p WHERE p.'{$options['coluna']}' LIKE '%{$options['valor']}%'";
+
+        return $this
+            ->getEntityManager()
+            ->createQuery($dql)
+            ->getResult()
+        ;
     }
 }

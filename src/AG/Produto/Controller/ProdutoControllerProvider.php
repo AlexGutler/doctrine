@@ -21,6 +21,17 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
         })->bind('produtos');
 
+        // executa e exibe os resultados encontrados da busca pelo nome
+        $controllers->post("/find", function(Request $request) use($app){
+            $options = array(
+                'coluna' => 'nome',
+                'valor' => $request->get('nome')
+            );
+            $produtos = $app['produtoService']->buscarProduto($options);
+
+            return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
+        })->bind('produto-find');
+
         // formulario para cadastro de novo produto
         $controllers->get("/novo", function() use($app){
             //return $app['twig']->render('produto-novo.twig', ['id' => null]);
@@ -28,8 +39,8 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 'produto-novo.twig',
                 [
                     'id' => null,
-                    'errors' => array('nome'=>null,'descricao'=>null,'valor'=>null),
-                    'produto' => array('nome'=>null,'descricao'=>null,'valor'=>null)
+                    'errors' => array('nome' => null,'descricao' => null,'valor' => null),
+                    'produto' => array('nome' => null,'descricao' => null,'valor' => null)
                 ]);
         })->bind('produto-novo');
 

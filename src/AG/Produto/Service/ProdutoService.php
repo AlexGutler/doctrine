@@ -81,6 +81,22 @@ class ProdutoService
         $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
 
         //return $repository->findAll();
-        return $repository->getClientesDesc();
+        return $repository->getProdutosOrdenados();
     }
+    public  function buscarProduto($options = array())
+    {
+        /**
+         * @var $option
+         * @params 'coluna', 'valor'
+         */
+        $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
+        //return $repository->findByNome($options['valor']);
+        return $repository->getBuscarProdutos($options);
+    }
+
+    /*
+        A consulta SQL abaixo diz "retornar apenas 10 registros, começar no registro 16 (offset 15)":
+        $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15";
+
+     * */
 }
