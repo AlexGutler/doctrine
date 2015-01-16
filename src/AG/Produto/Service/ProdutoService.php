@@ -82,6 +82,7 @@ class ProdutoService
 
         //return $repository->findAll();
         return $repository->getProdutosOrdenados();
+        //return $repository->getProdutosPagination(1, 4);
     }
     public  function buscarProduto($options = array())
     {
@@ -93,10 +94,13 @@ class ProdutoService
         //return $repository->findByNome($options['valor']);
         return $repository->getBuscarProdutos($options);
     }
-
+    public function fetchPagination($offset, $limit)
+    {
+        $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
+        return $repository->fetchPagination($offset, $limit);
+    }
     /*
         A consulta SQL abaixo diz "retornar apenas 10 registros, começar no registro 16 (offset 15)":
         $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15";
-
-     * */
+    */
 }

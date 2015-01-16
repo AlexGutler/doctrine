@@ -7,6 +7,9 @@
         <h1>Listagem de Produtos</h1>
     </header>
     <section class="container">
+        {% if paginas != null  %}
+             <span class="alert-danger">Número de Páginas: {{ paginas }}</span>
+        {% endif %}
 
         {% if deleted %}
             <span class="alert-danger">Produto removido com sucesso!</span>

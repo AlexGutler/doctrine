@@ -21,6 +21,28 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
         })->bind('produtos');
 
+
+
+
+        // TESTES PAGINATION
+        $controllers->get('/pag/{id}', function (Application $app) {
+            // definir o limite de registros por página e o registro inicial da busca (offset)
+            $offset = 0; // iniciar daquie
+            $limit = 5; // quantidade de registros
+
+            // buscar o número de registros para calcular a quantidade de páginas
+            $pags = $app['produtoService']->fetchAll();
+            $c = ceil(count($pags)/$limit); // arredondar para cima para ter o número de páginas
+
+            $produtos = $app['produtoService']->fetchPagination($offset, $limit);
+
+            /* passar os produtos, o deleted, o número de páginas */
+            return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false, 'paginas' => $c]);
+        })->bind('produtos-pagination');
+
+
+
+
         // executa e exibe os resultados encontrados da busca pelo nome
         $controllers->post("/find", function(Request $request) use($app){
             $options = array(
