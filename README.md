@@ -1,4 +1,4 @@
-Exemplo API REST com Silex e Doctrine
+Exemplo API REST E CRUD com Silex e Doctrine
 =====================================
 
 Este é um exemplo de uma api REST e CRUD utilizando o micro-framework Silex e o Doctrine.
