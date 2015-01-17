@@ -7,9 +7,9 @@
         <h1>Listagem de Produtos</h1>
     </header>
     <section class="container">
-        {% if paginas != null  %}
-             <span class="alert-danger">Número de Páginas: {{ paginas }}</span>
-        {% endif %}
+       {# {% if paginas != null  %}
+             <span class="alert-danger">Número de Páginas: {{ paginas }} </span>
+        {% endif %} #}
 
         {% if deleted %}
             <span class="alert-danger">Produto removido com sucesso!</span>
@@ -45,6 +45,19 @@
             {% endfor %}
             </tbody>
         </table>
+    </section>
+
+    <!-- Monta a páginação dos resultados -->
+    <section class="container">
+        {% if paginas > 0 %}
+            <ul class="pagination">
+            {% for pagina in 1..paginas %}
+                <li class="{% if activepage == pagina %}active{% endif %}">
+                    <a href="{{ path('produtos-pagination', {id : pagina}) }}"> {{ pagina }} </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
     </section>
 {% endblock %}
 

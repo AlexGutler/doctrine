@@ -93,6 +93,7 @@ class ProdutoService
         $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
         //return $repository->findByNome($options['valor']);
         return $repository->getBuscarProdutos($options);
+        //return $repository->fetchPagination($offset, $limit, $options);
     }
     public function fetchPagination($offset, $limit)
     {

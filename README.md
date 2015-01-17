@@ -1,9 +1,35 @@
-Doctrine - Projeto Fase 1
+Exemplo API REST com Silex e Doctrine
+=====================================
 
-Persistência com doctrine
+Este é um exemplo de uma api REST e CRUD utilizando o micro-framework Silex e o Doctrine.
 
-Agora que você já possui uma API pública de seu projeto com Silex, faça uma mudança em seu projeto (da forma mais sutil possível), para alterar o formato atual para persistir os dados no banco de dados com o Doctrine nas condições de Adicionar, Alterar e Remover um registro.
+-------------
 
-É sabido que não foi apresentado ainda a forma de como alterar e remover o registro e então é nesse ponto que está o principal desafio dessa fase do projeto.
+Utilização
+-------------
 
-Boa sorte! =)
+> **Instalação:**
+> - git clone https://github.com/AlexGutler/doctrine.git
+> - cd doctrine
+> - Baixe o composer e faça a instalação das dependências
+> - Edite as configurações para conectar em seu MySql em: "src\AG\config\config.php"
+> - Ainda na raiz do projeto, para criar o banco e inserir registros de teste execute: "php fixtures.php"
+> - Acesse a pasta public e execute o built-in server com o comando "php -S localhost:80"
+
+### <i class="icon-refresh"></i> ROTAS
+
+> **Utilzando o método HTTP GET:**
+> - /api/produtos - Selecionar todos os registros.
+> - /api/produtos/{id} - Selecionar um registro único de acordo com o id informado.
+
+> **Utilizando o método HTTP POST:**
+> - /api/produtos/ - {Parâmetros: nome, descricao, valor} - insere um registro no banco.
+
+> **Utilizando o método HTTP PUT**
+> - /api/produtos/{id} - {Parâmetros: nome, descricao, valor} - altera o registro com o id informado.
+
+> **Utilizando o método HTTP DELETE**
+> - /api/produtos/{id} - deleta o registro de acordo com o id informado.
+
+### <i class="icon-refresh"></i> CRUD
+> **Para utilizar o CRUD acessar no browser o Menu PRODUTOS**

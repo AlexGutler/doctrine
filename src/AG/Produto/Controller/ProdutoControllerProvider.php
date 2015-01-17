@@ -16,47 +16,55 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
         // listagem de produtos
         $controllers->get('/', function (Application $app) {
-            $produtos = $app['produtoService']->fetchAll();
+            //$produtos = $app['produtoService']->fetchAll();
+            //return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
 
-            return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
+            // direcinar para pagina 1
+            return $app->redirect('pag/1');
         })->bind('produtos');
 
-
-
-
-        // TESTES PAGINATION
-        $controllers->get('/pag/{id}', function (Application $app) {
+        // PAGINATION DOS PRODUTOS
+        $controllers->get('/pag/{id}', function (Application $app, $id) {
             // definir o limite de registros por página e o registro inicial da busca (offset)
-            $offset = 0; // iniciar daquie
-            $limit = 5; // quantidade de registros
+            if(!isset($id)){$id = 1;}
+
+            $limit = 5; // limite de registros por página
+            $offset = ($id - 1) * $limit; // buscar a partir do registro
 
             // buscar o número de registros para calcular a quantidade de páginas
             $pags = $app['produtoService']->fetchAll();
-            $c = ceil(count($pags)/$limit); // arredondar para cima para ter o número de páginas
+            $numPages = ceil(count($pags)/$limit); // arredondar para cima para ter o número de páginas
 
+            // busca os produtos
             $produtos = $app['produtoService']->fetchPagination($offset, $limit);
 
-            /* passar os produtos, o deleted, o número de páginas */
-            return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false, 'paginas' => $c]);
+            /* passar os produtos, o deleted, o número de páginas, a página ativa */
+            return $app['twig']->render(
+                'produtos.twig',
+                ['produtos' => $produtos, 'deleted' => false, 'paginas' => $numPages, 'activepage' => $id]
+            );
         })->bind('produtos-pagination');
-
-
-
 
         // executa e exibe os resultados encontrados da busca pelo nome
         $controllers->post("/find", function(Request $request) use($app){
+            // array com as opções de busca
             $options = array(
                 'coluna' => 'nome',
                 'valor' => $request->get('nome')
             );
+
+            // faz a busca com os parametros
             $produtos = $app['produtoService']->buscarProduto($options);
 
-            return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
+            /* passar os produtos, o deleted, o número de páginas */
+            return $app['twig']->render(
+                'produtos.twig',
+                ['produtos' => $produtos, 'deleted' => false, 'paginas' => 0]
+            );
         })->bind('produto-find');
 
         // formulario para cadastro de novo produto
         $controllers->get("/novo", function() use($app){
-            //return $app['twig']->render('produto-novo.twig', ['id' => null]);
             return $app['twig']->render(
                 'produto-novo.twig',
                 [
@@ -79,7 +87,6 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                         'errors' => $result,
                         'produto' => $request->request->all()
                     ]);
-                //$app->abort(500, $result);
             }
         })->bind('produto-salvar');
 
@@ -116,7 +123,6 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                         'produto' => $request->request->all(),
                         'errors' => $result
                     ]);
-                //$app->abort(500, $result);
             }
         })->bind('produto-atualizar');
 

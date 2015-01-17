@@ -52,6 +52,7 @@ class ProdutoRepository extends EntityRepository
     public function fetchPagination($offset, $limit)
     {
         $dql = "SELECT p FROM AG\Produto\Entity\Produto p";
+
         $query = $this
             ->getEntityManager()
             ->createQuery($dql)
