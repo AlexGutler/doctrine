@@ -79,7 +79,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->insert($request);
 
             if (!is_array($result)) {
-                return $app['twig']->render('produto-sucesso.twig', []);
+                return $app['twig']->render('produto-sucesso.twig', ['mensagem' => 'Produto cadastrado com sucesso!']);
             } else {
                 return $app['twig']->render('produto-novo.twig',
                     [
@@ -95,8 +95,9 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->delete($id);
             if ($result)
             {
-                $produtos = $app['produtoService']->fetchAll();
-                return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => true]);
+                //$produtos = $app['produtoService']->fetchAll();
+                //return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => true]);
+                return $app['twig']->render('produto-sucesso.twig', ['mensagem' => 'Produto removido com sucesso!']);
             } else {
                 $app->abort(500, "Erro ao deletar o produto");
             }
@@ -107,7 +108,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $produto = $app['produtoService']->fetch($id);
 
             return $app['twig']->render('produto-novo.twig',
-                ['id' => $id, 'produto' => $produto, 'errors' => array('nome'=>null,'descricao'=>null,'valor'=>null)]);
+                ['id' => $id, 'produto' => $produto, 'errors' => array('nome' => null,'descricao' => null,'valor' => null)]);
         })->bind('produto-editar');
 
         // post dos dados da edição
@@ -115,7 +116,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->update($request, $id);
 
             if (!is_array($result)) {
-                return $app['twig']->render('produto-sucesso.twig', []);
+                return $app['twig']->render('produto-sucesso.twig', ['mensagem' => 'Produto alterado com sucesso!']);
             } else {
                 return $app['twig']->render('produto-novo.twig',
                     [
