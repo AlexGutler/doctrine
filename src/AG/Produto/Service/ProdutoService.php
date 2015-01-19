@@ -81,15 +81,7 @@ class ProdutoService
     {
         $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
 
-        $produtos =  $repository->findAll();
-
-        $arrayProdutos = array();
-
-        foreach ($produtos as $produto) {
-            $arrayProdutos[] = $produto->toArray();
-        }
-
-        return $arrayProdutos;
+        return $repository->findAll();
         //return $repository->getProdutosOrdenados();
         //return $repository->getProdutosPagination(1, 4);
     }

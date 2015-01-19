@@ -18,7 +18,13 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
         $controllers->get('/', function (Application $app) {
             $produtos = $app['produtoService']->fetchAll();
 
-            return $app->json($produtos);
+            $arrayProdutos = array();
+
+            foreach ($produtos as $produto) {
+                $arrayProdutos[] = $produto->toArray();
+            }
+
+            return $app->json($arrayProdutos);
         })->bind('api-produtos-listar');
 
         // listar apenas 1
