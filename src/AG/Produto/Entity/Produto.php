@@ -104,4 +104,14 @@ class Produto
     {
         return 'id-> '.$this->getId().' | nome-> '.$this->getNome().' | descricao-> '.$this->getDescricao().' | valor-> '.$this->getValor();
     }
+
+    public function toArray()
+    {
+        return array(
+            'id' => $this->getId(),
+            'nome' => $this->getNome(),
+            'descricao' => $this->getDescricao(),
+            'valor' => $this->getValor()
+        );
+    }
 }

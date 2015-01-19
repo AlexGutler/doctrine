@@ -65,6 +65,7 @@ class ProdutoService
         $produto = $this->em->getReference('AG\Produto\Entity\Produto', $id);
 
         $this->em->remove($produto);
+        $this->em->flush();
 
         return true;
     }
@@ -80,8 +81,16 @@ class ProdutoService
     {
         $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
 
-        //return $repository->findAll();
-        return $repository->getProdutosOrdenados();
+        $produtos =  $repository->findAll();
+
+        $arrayProdutos = array();
+
+        foreach ($produtos as $produto) {
+            $arrayProdutos[] = $produto->toArray();
+        }
+
+        return $arrayProdutos;
+        //return $repository->getProdutosOrdenados();
         //return $repository->getProdutosPagination(1, 4);
     }
     public  function buscarProduto($options = array())
