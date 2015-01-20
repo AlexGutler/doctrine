@@ -62,4 +62,13 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/src/AG/views',
 ));
 
+$app['twig'] = $app->share($app->extend('twig', function($twig) {
+    $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) {
+        $host = filter_input(INPUT_SERVER, "HTTP_HOST");
+        return sprintf("http://{$host}/%s", ltrim($asset, '/'));
+    }));
+
+    return $twig;
+}));
+
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());

@@ -1,7 +1,10 @@
 <?php
-require_once __DIR__ . "/src/AG/config/connectionPDO.php";
+require_once __DIR__ ."/vendor/autoload.php";
+use AG\Database\DB;
+$config = include __DIR__."/src/AG/config/config.php";
 
-$conn = connectionPDO();
+$db = new DB($config['db']['dsn'], $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
+$conn = $db->getConnection();
 echo "Conectado ao banco de dados.\n";
 
 $conn->query("DROP SCHEMA IF EXISTS `silexdb`");

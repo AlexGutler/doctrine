@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response,
 // criando a conexão
 $config = include __DIR__ .'/../src/AG/config/config.php';
 $app['conn'] = function() use ($config){
-    return (new DB($config['db']['dsn'], $config['db']['username'], $config['db']['password']))->getConnection();
+    return (new DB($config['db']['dsn'], $config['db']['dbname'], $config['db']['username'], $config['db']['password']))->getConnection();
 };
 // armazenando a entidade produto
 $app['produto'] = function(){
@@ -34,35 +34,23 @@ $app['produtoService'] = function() use ($app, $em) {
     return new ProdutoService($em, $app['produtoValidator']);
 };
 
-
 // mount no ControllerProvider de Produtos
 $app->mount('/produtos', new ProdutoControllerProvider());
 
 // mount no API REST
 $app->mount('/api/produtos', new ApiProdutoControllerProvider());
 
-// rota index
 $app->get("/", function() use($app){
-    return $app['twig']->render('index.twig', []);
+    return $app['twig']->render('index.html.twig', []);
 })->bind('index');
 
 $app->error(function (\Exception $e, $code) use ($app) {
 
     if ($code == 404) {
-
-        /*$loader = $app['dataloader'];
-        $data = array(
-            'global' => $loader->load('global'),
-            'common' => $loader->load('common', $app['locale']),
-            'header' => $loader->load('header', $app['locale']),
-            'footer' => $loader->load('footer', $app['locale'])
-        );*/
-
-        return new Response( $app['twig']->render('404.twig', array( 'data' => $data )), 404);
+        return new Response( $app['twig']->render('404.html.twig'), 404);
     }
 
-    return new Response('We are sorry, but something went terribly wrong.', $code);
-
+    return new Response('Desculpe, aconteceu algo errado.<br> Erro: '.$e->getMessage(), $code);
 });
 
 $app->run();

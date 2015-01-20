@@ -40,7 +40,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
             /* passar os produtos, o deleted, o número de páginas, a página ativa */
             return $app['twig']->render(
-                'produtos.twig',
+                'Produto/index.html.twig',
                 ['produtos' => $produtos, 'deleted' => false, 'paginas' => $numPages, 'activepage' => $id]
             );
         })->bind('produtos-pagination');
@@ -58,7 +58,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
             /* passar os produtos, o deleted, o número de páginas */
             return $app['twig']->render(
-                'produtos.twig',
+                'Produto/index.html.twig',
                 ['produtos' => $produtos, 'deleted' => false, 'paginas' => 0]
             );
         })->bind('produto-find');
@@ -66,7 +66,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
         // formulario para cadastro de novo produto
         $controllers->get("/novo", function() use($app){
             return $app['twig']->render(
-                'produto-novo.twig',
+                'Produto/novo.html.twig',
                 [
                     'id' => null,
                     'errors' => array('nome' => null,'descricao' => null,'valor' => null),
@@ -79,9 +79,9 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->insert($request);
 
             if (!is_array($result)) {
-                return $app['twig']->render('produto-sucesso.twig', ['mensagem' => 'Produto cadastrado com sucesso!']);
+                return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto cadastrado com sucesso!']);
             } else {
-                return $app['twig']->render('produto-novo.twig',
+                return $app['twig']->render('Produto/novo.html.twig',
                     [
                         'id' => null,
                         'errors' => $result,
@@ -97,7 +97,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             {
                 //$produtos = $app['produtoService']->fetchAll();
                 //return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => true]);
-                return $app['twig']->render('produto-sucesso.twig', ['mensagem' => 'Produto removido com sucesso!']);
+                return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto removido com sucesso!']);
             } else {
                 $app->abort(500, "Erro ao deletar o produto");
             }
@@ -107,7 +107,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
         $controllers->get("/{id}/editar", function($id) use($app){
             $produto = $app['produtoService']->fetch($id);
 
-            return $app['twig']->render('produto-novo.twig',
+            return $app['twig']->render('Produto/novo.html.twig',
                 ['id' => $id, 'produto' => $produto, 'errors' => array('nome' => null,'descricao' => null,'valor' => null)]);
         })->bind('produto-editar');
 
@@ -116,9 +116,9 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->update($request, $id);
 
             if (!is_array($result)) {
-                return $app['twig']->render('produto-sucesso.twig', ['mensagem' => 'Produto alterado com sucesso!']);
+                return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto alterado com sucesso!']);
             } else {
-                return $app['twig']->render('produto-novo.twig',
+                return $app['twig']->render('Produto/novo.html.twig',
                     [
                         'id' => $id,
                         'produto' => $request->request->all(),
