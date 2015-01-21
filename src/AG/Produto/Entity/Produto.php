@@ -1,6 +1,7 @@
 <?php
 namespace AG\Produto\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,8 +38,35 @@ class Produto
      */
     private $categoria;
 
-
+    /**
+     * @ORM\ManyToMany(targetEntity="AG\Tag\Entity\Tag")
+     * @ORM\JoinTable(name="produtos_tags",
+     *      joinColumns={@ORM\JoinColumn(name="produto_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     *     )
+     */
     private $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
+    /**
+     * @param mixed $tags
+     */
+    public function addTag($tags)
+    {
+        $this->tags->add($tags);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
 
     /**
      * @return mixed
