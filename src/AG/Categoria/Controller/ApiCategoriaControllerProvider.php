@@ -1,5 +1,5 @@
 <?php
-namespace AG\Produto\Controller;
+namespace AG\Categoria\Controller;
 
 use Silex\Application,
     Silex\ControllerCollection,
@@ -7,7 +7,7 @@ use Silex\Application,
 use Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\Request;
 
-class ApiProdutoControllerProvider implements ControllerProviderInterface
+class ApiCategoriaControllerProvider implements ControllerProviderInterface
 {
     public function connect(Application $app)
     {
@@ -15,59 +15,60 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
 
         // listar todos
         $controllers->get('/', function (Application $app) {
-            $produtos = $app['produtoService']->fetchAll();
+            $categorias = $app['categoriaService']->fetchAll();
 
-            $arrayProdutos = array();
+            $arrayCategorias = array();
 
-            foreach ($produtos as $produto) {
-                $arrayProdutos[] = $produto->toArray();
+            foreach ($categorias as $categoria)
+            {
+                $arrayCategorias[] = $categoria->toArray();
             }
 
-            return $app->json($arrayProdutos);
-        })->bind('api-produtos-listar');
+            return $app->json($arrayCategorias);
+        })->bind('api-categorias-listar');
 
         // listar apenas 1
         $controllers->get('/{id}', function (Application $app, $id) {
-            $produto = $app['produtoService']->fetch($id);
+            $categoria = $app['categoriaService']->fetch($id);
 
-            return $app->json($produto->toArray());
-        })->bind('api-produtos-listar-id');
+            return $app->json($categoria->toArray());
+        })->bind('api-categorias-listar-id');
 
         // cadastrar
         $controllers->post('/', function(Request $request) use($app) {
-            $result = $app['produtoService']->insert($request);
+            $result = $app['categoriaService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->json(['success' => "Produto Cadastrado com Sucesso!"]);
+                return $app->json($result->toArray());
             } else {
                 return $app->json($result);
             }
 
-        })->bind('api-produtos-cadastrar');
+        })->bind('api-categorias-cadastrar');
 
         // alterar
         $controllers->put("/{id}", function(Request $request, $id) use($app) {
-            $result = $app['produtoService']->update($request, $id);
+            $result = $app['categoriaService']->update($request, $id);
 
             if(!$result) {
-                return $app->json(['erro' => 'Produto não encontrado!']);
+                return $app->json(['erro' => 'Categoria não encontrada!']);
             }elseif (!is_array($result)) {
-                return $app->json($request->toArray());
+                return $app->json($result->toArray());
             } else {
                 return $app->json($result);
             }
-        })->bind('api-produtos-alterar');
+        })->bind('api-categorias-alterar');
 
         // deletar
         $controllers->delete('/{id}', function($id) use($app){
-            $result = $app['produtoService']->delete($id);
+            $result = $app['categoriaService']->delete($id);
 
             if ($result) {
                 return $app->json(['success' => "Produto Removido com Sucesso!"]);
             } else {
-                return $app->json(['erro '=> "Erro ao Remover o produto"]);
+                return $app->json(['erro' => "Erro ao Remover o produto"]);
             }
-        })->bind('api-produtos-deletar');
+        })->bind('api-categorias-deletar');
 
         return $controllers;
     }

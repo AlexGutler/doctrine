@@ -1,12 +1,10 @@
 <?php
-
 namespace AG\Produto\Service;
 
 use AG\Produto\Entity\Produto as ProdutoEntity,
     AG\Produto\Validator\ProdutoValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
-
 
 class ProdutoService
 {
@@ -85,6 +83,7 @@ class ProdutoService
         //return $repository->getProdutosOrdenados();
         //return $repository->getProdutosPagination(1, 4);
     }
+
     public  function buscarProduto($options = array())
     {
         /**

@@ -8,6 +8,9 @@ use AG\Produto\Entity\Produto,
     AG\Produto\Validator\ProdutoValidator,
     AG\Produto\Controller\ProdutoControllerProvider,
     AG\Produto\Controller\ApiProdutoControllerProvider;
+use AG\Categoria\Service\CategoriaService,
+    AG\Categoria\Controller\ApiCategoriaControllerProvider,
+    AG\Categoria\Validator\CategoriaValidator;
 use Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\Request;
 
@@ -29,27 +32,37 @@ $app['mapper'] = function() use ($em) {
 $app['produtoValidator'] = function(){
   return new ProdutoValidator();
 };
+// armazenar o validator da categoria
+$app['categoriaValidator'] = function(){
+    return new CategoriaValidator();
+};
 // armazenar o service do produto
 $app['produtoService'] = function() use ($app, $em) {
     return new ProdutoService($em, $app['produtoValidator']);
+};
+// armazenar o service da categoria
+$app['categoriaService'] = function() use ($app, $em) {
+    return new CategoriaService($em, $app['categoriaValidator']);
 };
 
 // mount no ControllerProvider de Produtos
 $app->mount('/produtos', new ProdutoControllerProvider());
 
-// mount no API REST
+// mount no API REST produtos
 $app->mount('/api/produtos', new ApiProdutoControllerProvider());
+
+// mount no API REST categorias
+$app->mount('/api/categorias', new ApiCategoriaControllerProvider());
 
 $app->get("/", function() use($app){
     return $app['twig']->render('index.html.twig', []);
 })->bind('index');
 
 $app->error(function (\Exception $e, $code) use ($app) {
-
-    if ($code == 404) {
+    if ($code == 404)
+    {
         return new Response( $app['twig']->render('404.html.twig'), 404);
     }
-
     return new Response('Desculpe, aconteceu algo errado.<br> Erro: '.$e->getMessage(), $code);
 });
 

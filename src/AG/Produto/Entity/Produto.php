@@ -1,5 +1,4 @@
 <?php
-
 namespace AG\Produto\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -32,6 +31,31 @@ class Produto
      */
     private $valor;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AG\Categoria\Entity\Categoria")
+     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id")
+     */
+    private $categoria;
+
+
+    private $tags;
+
+    /**
+     * @return mixed
+     */
+    public function getCategoria()
+    {
+        return $this->categoria;
+    }
+
+    /**
+     * @param mixed $categoria
+     */
+    public function setCategoria($categoria)
+    {
+        $this->categoria = $categoria;
+        return $this;
+    }
 
     /**
      * @return mixed
