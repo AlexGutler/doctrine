@@ -11,6 +11,9 @@ use AG\Produto\Entity\Produto,
 use AG\Categoria\Service\CategoriaService,
     AG\Categoria\Controller\ApiCategoriaControllerProvider,
     AG\Categoria\Validator\CategoriaValidator;
+use AG\Tag\Controller\ApiTagControllerProvider,
+    AG\Tag\Validator\TagValidator,
+    AG\Tag\Service\TagService;
 use Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\Request;
 
@@ -36,6 +39,10 @@ $app['produtoValidator'] = function(){
 $app['categoriaValidator'] = function(){
     return new CategoriaValidator();
 };
+// armazenar o validator da categoria
+$app['tagValidator'] = function(){
+    return new TagValidator();
+};
 // armazenar o service do produto
 $app['produtoService'] = function() use ($app, $em) {
     return new ProdutoService($em, $app['produtoValidator']);
@@ -43,6 +50,10 @@ $app['produtoService'] = function() use ($app, $em) {
 // armazenar o service da categoria
 $app['categoriaService'] = function() use ($app, $em) {
     return new CategoriaService($em, $app['categoriaValidator']);
+};
+// armazenar o service da tag
+$app['tagService'] = function() use ($app, $em) {
+    return new TagService($em, $app['tagValidator']);
 };
 
 // mount no ControllerProvider de Produtos
@@ -53,6 +64,9 @@ $app->mount('/api/produtos', new ApiProdutoControllerProvider());
 
 // mount no API REST categorias
 $app->mount('/api/categorias', new ApiCategoriaControllerProvider());
+
+// mount no API REST categorias
+$app->mount('/api/tags', new ApiTagControllerProvider());
 
 $app->get("/", function() use($app){
     return $app['twig']->render('index.html.twig', []);

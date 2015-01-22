@@ -7,11 +7,11 @@ $db = new DB($config['db']['dsn'], $config['db']['dbname'], $config['db']['usern
 $conn = $db->getConnection();
 echo "Conectado ao banco de dados.\n";
 
-$conn->query("DROP SCHEMA IF EXISTS `silexdb`");
-$conn->query("CREATE SCHEMA `silexdb`");
+//$conn->query("DROP SCHEMA IF EXISTS `silexdb`");
+//$conn->query("CREATE SCHEMA `silexdb`");
 $conn->query("USE `silexdb`");
 echo "Schema criado com sucesso.\n";
-
+/*
 $conn->query("DROP TABLE IF EXISTS `produtos`");
 
 $conn->query("CREATE TABLE `produtos`(
@@ -43,3 +43,4 @@ $sql = "INSERT INTO `silexdb`.`produtos` (`id`, `nome`, `descricao`, `valor`) VA
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 echo "Registros inseridos com sucesso.\n";
+*/

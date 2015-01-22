@@ -31,9 +31,15 @@ class ProdutoService
             return $isValid;
         }
 
-        if(isset($request['tags']))
+        if($request->get('categoria'))
         {
-            $tags = explode(',', $request['tags']); // criar um array de tags
+            $categoriaEntity = $this->em->getReference("AG\Categoria\Entity\Categoria", $request->get('categoria'));
+            $produtoEntity->setCategoria($categoriaEntity);
+        }
+
+        if($request->get('tags'))
+        {
+            $tags = explode(',', $request->get('tags')); // criar um array de tags
 
             foreach($tags as $rowTag)
             {
@@ -62,6 +68,24 @@ class ProdutoService
         if(true !== $isValid)
         {
             return $isValid;
+        }
+
+        if($request->get('categoria'))
+        {
+            $categoriaEntity = $this->em->getReference("AG\Categoria\Entity\Categoria", $request->get('categoria'));
+            $produto->setCategoria($categoriaEntity);
+        }
+
+        if($request->get('tags'))
+        {
+            $tags = explode(',', $request->get('tags')); // criar um array de tags
+
+            foreach($tags as $rowTag)
+            {
+                // pega pela referencia a tag com o id da $rowTag e o adiciona no produto
+                $tagEntity = $this->em->getReference("AG\Tag\Entity\Tag", $rowTag);
+                $produto->addTag($tagEntity);
+            }
         }
 
         $this->em->persist($produto);

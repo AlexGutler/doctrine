@@ -38,7 +38,7 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->json(['success' => "Produto Cadastrado com Sucesso!"]);
+                return $app->json($result->toArray());
             } else {
                 return $app->json($result);
             }
