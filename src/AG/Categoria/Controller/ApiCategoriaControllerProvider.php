@@ -64,9 +64,9 @@ class ApiCategoriaControllerProvider implements ControllerProviderInterface
             $result = $app['categoriaService']->delete($id);
 
             if ($result) {
-                return $app->json(['success' => "Produto Removido com Sucesso!"]);
+                return $app->json(['success' => "Categoria Removida com Sucesso!"]);
             } else {
-                return $app->json(['erro' => "Erro ao Remover o produto"]);
+                return $app->json(['erro' => "Erro ao Remover a Categoria"]);
             }
         })->bind('api-categorias-deletar');
 

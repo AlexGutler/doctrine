@@ -52,7 +52,7 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
             if(!$result) {
                 return $app->json(['erro' => 'Produto não encontrado!']);
             }elseif (!is_array($result)) {
-                return $app->json($request->toArray());
+                return $app->json($result->toArray());
             } else {
                 return $app->json($result);
             }

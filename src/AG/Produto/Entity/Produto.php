@@ -34,7 +34,7 @@ class Produto
 
     /**
      * @ORM\ManyToOne(targetEntity="AG\Categoria\Entity\Categoria")
-     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $categoria;
 
@@ -42,7 +42,7 @@ class Produto
      * @ORM\ManyToMany(targetEntity="AG\Tag\Entity\Tag")
      * @ORM\JoinTable(name="produtos_tags",
      *      joinColumns={@ORM\JoinColumn(name="produto_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id", onDelete="CASCADE")}
      *     )
      */
     private $tags;

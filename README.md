@@ -13,8 +13,7 @@ Utilização
 > - cd doctrine
 > - Baixe o composer e faça a instalação das dependências
 > - Edite as configurações para conectar em seu MySql em: "src\AG\config\config.php"
-> - Ainda na raiz do projeto, para criar o schema execute: "php fixtures.php"
-> - Depois utilize a linha de comando do doctrine para gerar as tabelas com o comando: php vendor/doctrine/orm/bin/doctrine orm:schema-tool:create
+> - Ainda na raiz do projeto, para criar o schema e as tabelas execute: "php fixtures.php"
 > - Acesse a pasta public e execute o built-in server com o comando "php -S localhost:80"
 
 ### <i class="icon-refresh"></i> ROTAS
