@@ -29,8 +29,11 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
         // listar apenas 1
         $controllers->get('/{id}', function (Application $app, $id) {
             $produto = $app['produtoService']->fetch($id);
-
-            return $app->json($produto->toArray());
+            if($produto){
+                return $app->json($produto->toArray());
+            } else {
+                return $app->json(['erro' => 'Produto não encontrado!']);
+            }
         })->bind('api-produtos-listar-id');
 
         // cadastrar

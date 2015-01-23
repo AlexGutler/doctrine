@@ -174,9 +174,19 @@ class Produto
      */
     public function toArray()
     {
-        $tags = array();
-        foreach ($this->getTags() as $tag) {
-            $tags[] = $tag->getNome();
+        if($this->getTags()){
+            $tags = array();
+            foreach ($this->getTags() as $tag) {
+                $tags[] = $tag->getNome();
+            }
+        } else {
+            $tags = null;
+        }
+
+        if ($this->getCategoria()) {
+            $categoria = $this->getCategoria()->toArray();
+        } else {
+            $categoria = null;
         }
 
         return [
@@ -185,7 +195,7 @@ class Produto
             'descricao' => $this->getDescricao(),
             'valor' => $this->getValor(),
             'tags' => $tags,
-            'categoria' => $this->getCategoria()->toArray()
+            'categoria' => $categoria
         ];
     }
 }
