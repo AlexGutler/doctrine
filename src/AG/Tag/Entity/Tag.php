@@ -31,6 +31,7 @@ class Tag
 
     /**
      * @param mixed $id
+     * @return mixed
      */
     public function setId($id)
     {
@@ -48,6 +49,7 @@ class Tag
 
     /**
      * @param mixed $nome
+     * @return mixed
      */
     public function setNome($nome)
     {
@@ -57,9 +59,9 @@ class Tag
 
     public function toArray()
     {
-        return array(
+        return [
             'id' => $this->getId(),
             'nome' => $this->getNome(),
-        );
+        ];
     }
 }

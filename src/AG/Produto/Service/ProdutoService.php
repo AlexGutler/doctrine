@@ -51,6 +51,7 @@ class ProdutoService
 
         $this->em->persist($produtoEntity);
         $this->em->flush();
+
         return $produtoEntity;
     }
 

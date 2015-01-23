@@ -78,6 +78,7 @@ class Produto
 
     /**
      * @param mixed $categoria
+     * @return mixed
      */
     public function setCategoria($categoria)
     {
@@ -93,11 +94,16 @@ class Produto
         return $this->id;
     }
 
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function setId($id)
     {
         $this->id = $id;
         return $this;
     }
+
     /**
      * @return mixed
      */
@@ -108,6 +114,7 @@ class Produto
 
     /**
      * @param mixed $nome
+     * @return mixed
      */
     public function setNome($nome)
     {
@@ -126,6 +133,7 @@ class Produto
 
     /**
      * @param mixed $descricao
+     * @return mixed
      */
     public function setDescricao($descricao)
     {
@@ -144,6 +152,7 @@ class Produto
 
     /**
      * @param mixed $valor
+     * @return mixed
      */
     public function setValor($valor)
     {
@@ -152,18 +161,31 @@ class Produto
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'id-> '.$this->getId().' | nome-> '.$this->getNome().' | descricao-> '.$this->getDescricao().' | valor-> '.$this->getValor();
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
-        return array(
+        $tags = array();
+        foreach ($this->getTags() as $tag) {
+            $tags[] = $tag->getNome();
+        }
+
+        return [
             'id' => $this->getId(),
             'nome' => $this->getNome(),
             'descricao' => $this->getDescricao(),
-            'valor' => $this->getValor()
-        );
+            'valor' => $this->getValor(),
+            'tags' => $tags,
+            'categoria' => $this->getCategoria()->toArray()
+        ];
     }
 }
