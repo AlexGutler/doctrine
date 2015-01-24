@@ -65,12 +65,23 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
         // formulario para cadastro de novo produto
         $controllers->get("/novo", function() use($app){
+            $categorias = $app['categoriaService']->fetchAll();
+            $tags = $app['tagService']->fetchAll();
+            /*$categorias = array();
+
+            foreach ($data as $categoria)
+            {
+                $categorias[] = $categoria->toArray();
+            }*/
+
             return $app['twig']->render(
                 'Produto/novo.html.twig',
                 [
                     'id' => null,
-                    'errors' => array('nome' => null,'descricao' => null,'valor' => null),
-                    'produto' => array('nome' => null,'descricao' => null,'valor' => null)
+                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'produto' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'categorias' => $categorias,
+                    'tags' => $tags
                 ]);
         })->bind('produto-novo');
 
