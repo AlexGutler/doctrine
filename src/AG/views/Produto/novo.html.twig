@@ -43,7 +43,15 @@
                 <div class="col-sm-2">
                     <select class="form-control" name="categoria">
                     {% for categoria in categorias %}
-                        <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
+                        <option value="{{ categoria.id }}"
+                                {% if not (id == null) %}
+                                    {% if (produto.categoria.id > 0) and (categoria.id == produto.categoria.id) %}
+                                        selected
+                                    {% endif %}
+                                {% endif %}
+                        >
+                            {{ categoria.nome }}
+                        </option>
                     {% endfor %}
                     </select>
                 </div>
@@ -55,7 +63,13 @@
                         {% for tag in tags %}
 
                             <label>
-                                <input type="checkbox" id="{{ tag.id }}" value="{{ tag.id }}">
+                                <input type="checkbox" name="tags[]" id="{{ tag.id }}" value="{{ tag.id }}"
+                                    {% if not (id == null) %}
+                                        {% if tag.id in produto.tags %}
+                                            checked
+                                       {% endif %}
+                                    {% endif %}
+                                >
                                 {{ tag.nome }}
                             </label>
 

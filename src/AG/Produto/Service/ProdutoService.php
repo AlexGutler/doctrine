@@ -39,8 +39,8 @@ class ProdutoService
 
         if($request->get('tags'))
         {
-            $tags = explode(',', $request->get('tags')); // criar um array de tags
-
+            //$tags = explode(',', $request->get('tags')); // criar um array de tags
+            $tags = $request->get('tags');
             foreach($tags as $rowTag)
             {
                 // pega pela referencia a tag com o id da $rowTag e o adiciona no produto

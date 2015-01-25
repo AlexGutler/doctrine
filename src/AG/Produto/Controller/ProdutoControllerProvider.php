@@ -79,7 +79,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 [
                     'id' => null,
                     'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
-                    'produto' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'produto' => array('nome' => null, 'descricao' => null, 'valor' => null, 'categoria' => null, 'tags' => null),
                     'categorias' => $categorias,
                     'tags' => $tags
                 ]);
@@ -117,9 +117,17 @@ class ProdutoControllerProvider implements ControllerProviderInterface
         // editar produto
         $controllers->get("/{id}/editar", function($id) use($app){
             $produto = $app['produtoService']->fetch($id);
+            $categorias = $app['categoriaService']->fetchAll();
+            $tags = $app['tagService']->fetchAll();
 
             return $app['twig']->render('Produto/novo.html.twig',
-                ['id' => $id, 'produto' => $produto, 'errors' => array('nome' => null,'descricao' => null,'valor' => null)]);
+                [
+                    'id' => $id,
+                    'produto' => $produto,
+                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'categorias' => $categorias,
+                    'tags' => $tags
+                ]);
         })->bind('produto-editar');
 
         // post dos dados da edição

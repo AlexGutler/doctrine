@@ -166,7 +166,8 @@ class Produto
      */
     public function __toString()
     {
-        return 'id-> '.$this->getId().' | nome-> '.$this->getNome().' | descricao-> '.$this->getDescricao().' | valor-> '.$this->getValor();
+        return 'id-> '.$this->getId().' | nome-> '.$this->getNome().
+        ' | descricao-> '.$this->getDescricao().' | valor-> '.$this->getValor().' | categoria_id->'.$this->getCategoria()->getId();
     }
 
     /**
