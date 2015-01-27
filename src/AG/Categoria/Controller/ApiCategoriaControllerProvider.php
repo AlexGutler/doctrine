@@ -17,21 +17,14 @@ class ApiCategoriaControllerProvider implements ControllerProviderInterface
         $controllers->get('/', function (Application $app) {
             $categorias = $app['categoriaService']->fetchAll();
 
-            $arrayCategorias = array();
-
-            foreach ($categorias as $categoria)
-            {
-                $arrayCategorias[] = $categoria->toArray();
-            }
-
-            return $app->json($arrayCategorias);
+            return $app->json($categorias);
         })->bind('api-categorias-listar');
 
         // listar apenas 1
         $controllers->get('/{id}', function (Application $app, $id) {
             $categoria = $app['categoriaService']->fetch($id);
 
-            return $app->json($categoria->toArray());
+            return $app->json($categoria);
         })->bind('api-categorias-listar-id');
 
         // cadastrar
@@ -39,7 +32,7 @@ class ApiCategoriaControllerProvider implements ControllerProviderInterface
             $result = $app['categoriaService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->json($result->toArray());
+                return $app->json(['success'=>true, 'messages' => ['Categoria cadastrada com sucesso']]);
             } else {
                 return $app->json($result);
             }
@@ -53,7 +46,7 @@ class ApiCategoriaControllerProvider implements ControllerProviderInterface
             if(!$result) {
                 return $app->json(['erro' => 'Categoria não encontrada!']);
             }elseif (!is_array($result)) {
-                return $app->json($result->toArray());
+                return $app->json(['success'=>true, 'messages' => ['Categoria atualizada com sucesso']]);
             } else {
                 return $app->json($result);
             }

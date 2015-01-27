@@ -17,20 +17,14 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
         $controllers->get('/', function (Application $app) {
             $produtos = $app['produtoService']->fetchAll();
 
-            $arrayProdutos = array();
-
-            foreach ($produtos as $produto) {
-                $arrayProdutos[] = $produto->toArray();
-            }
-
-            return $app->json($arrayProdutos);
+            return $app->json($produtos);
         })->bind('api-produtos-listar');
 
         // listar apenas 1
         $controllers->get('/{id}', function (Application $app, $id) {
             $produto = $app['produtoService']->fetch($id);
             if($produto){
-                return $app->json($produto->toArray());
+                return $app->json($produto);
             } else {
                 return $app->json(['erro' => 'Produto não encontrado!']);
             }
@@ -41,7 +35,7 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->json($result->toArray());
+                return $app->json(['success' => true, 'messages' => ['produto cadastrado com sucesso']]);
             } else {
                 return $app->json($result);
             }
@@ -55,7 +49,7 @@ class ApiProdutoControllerProvider implements ControllerProviderInterface
             if(!$result) {
                 return $app->json(['erro' => 'Produto não encontrado!']);
             }elseif (!is_array($result)) {
-                return $app->json($result->toArray());
+                return $app->json(['success' => true, 'messages' => ['Produto alterado com sucesso']]);
             } else {
                 return $app->json($result);
             }

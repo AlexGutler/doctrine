@@ -17,21 +17,14 @@ class ApiTagControllerProvider implements ControllerProviderInterface
         $controllers->get('/', function (Application $app) {
             $tags = $app['tagService']->fetchAll();
 
-            $arrayTags = array();
-
-            foreach ($tags as $tag)
-            {
-                $arrayTags[] = $tag->toArray();
-            }
-
-            return $app->json($arrayTags);
+            return $app->json($tags);
         })->bind('api-tags-listar');
 
         // listar apenas 1
         $controllers->get('/{id}', function (Application $app, $id) {
-            $categoria = $app['tagService']->fetch($id);
+            $tag = $app['tagService']->fetch($id);
 
-            return $app->json($categoria->toArray());
+            return $app->json($tag);
         })->bind('api-tags-listar-id');
 
         // cadastrar
@@ -39,7 +32,7 @@ class ApiTagControllerProvider implements ControllerProviderInterface
             $result = $app['tagService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->json($result->toArray());
+                return $app->json(['success' => true, 'messages' => ['Tag cadastrada com sucesso']]);
             } else {
                 return $app->json($result);
             }
@@ -53,7 +46,7 @@ class ApiTagControllerProvider implements ControllerProviderInterface
             if(!$result) {
                 return $app->json(['erro' => 'Tag não encontrada!']);
             }elseif (!is_array($result)) {
-                return $app->json($result->toArray());
+                return $app->json(['success' => true, 'messages' => ['Tag alterada com sucesso']]);
             } else {
                 return $app->json($result);
             }

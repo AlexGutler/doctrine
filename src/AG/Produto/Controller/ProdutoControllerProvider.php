@@ -21,6 +21,14 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
             // direcinar para pagina 1
             return $app->redirect('pag/1');
+//            $user = 'alex';
+//            $app['session']->set('user', array('username' => 'simone'));
+//
+//            if ($user == $app['session']->get('user')) {
+//                return $app->redirect('pag/1');
+//            } else {
+//                $app->abort(501, 'Sessão não encontrada');
+//            }
         })->bind('produtos');
 
         // PAGINATION DOS PRODUTOS
@@ -136,6 +144,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
             if (!is_array($result)) {
                 return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto alterado com sucesso!']);
+                //return $app->redirect('/produtos');
             } else {
                 return $app['twig']->render('Produto/novo.html.twig',
                     [

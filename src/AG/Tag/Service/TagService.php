@@ -67,13 +67,32 @@ class TagService
     {
         $repository = $this->em->getRepository('AG\Tag\Entity\Tag');
 
-        return $repository->find($id);
+        return $this->getData($repository->find($id));
     }
 
     public function fetchAll()
     {
         $repository = $this->em->getRepository('AG\Tag\Entity\Tag');
 
-        return $repository->findAll();
+        return $this->toArray($repository->findAll());
+    }
+
+    public function toArray(array $tags)
+    {
+        $arrayTags = array();
+        foreach($tags as $key => $tag){
+            $arrayTags[$key]['id'] = $tag->getId();
+            $arrayTags[$key]['nome'] = $tag->getNome();
+        }
+
+        return $arrayTags;
+    }
+
+    private function getData(Tag $tag)
+    {
+        $arrayTag['id'] = $tag->getId();
+        $arrayTag['nome'] = $tag->getNome();
+
+        return $arrayTag;
     }
 }

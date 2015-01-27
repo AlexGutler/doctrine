@@ -66,4 +66,13 @@ class ProdutoRepository extends EntityRepository
         A consulta SQL acima diz "retornar apenas $limit registros, começar no registro $offset":
         $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15";
     */
+
+
+    public function removeAssociationTag($idProduto)
+    {
+        $sql = "DELETE FROM produtos_tags WHERE produto_id = :id";
+        $params = array('id' => $idProduto);
+
+        return $this->getEntityManager()->getConnection()->prepare($sql)->execute($params);
+    }
 }

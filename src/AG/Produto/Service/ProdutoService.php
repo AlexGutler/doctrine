@@ -77,18 +77,15 @@ class ProdutoService
             $produto->setCategoria($categoriaEntity);
         }
 
-        if($request->get('tags'))
-        {
-            $tags = explode(',', $request->get('tags')); // criar um array de tags
-
-            foreach($tags as $rowTag)
-            {
-                // pega pela referencia a tag com o id da $rowTag e o adiciona no produto
-                $tagEntity = $this->em->getReference("AG\Tag\Entity\Tag", $rowTag);
-                $produto->addTag($tagEntity);
-            }
+        // antes de adicionar as tags é necessário remover as já cadastradas no banco
+        $produtoRepository = $this->em->getRepository("AG\Produto\Entity\Produto", $id);
+        $produtoRepository->removeAssociationTag($id);
+        foreach($request->get('tags') as $tag){
+            $entityTag = $this->em->getReference("AG\Tag\Entity\Tag", $tag);
+            $produto->addTag($entityTag);
         }
 
+        // aplica no banco
         $this->em->persist($produto);
         $this->em->flush();
 
@@ -98,6 +95,10 @@ class ProdutoService
     public function delete($id)
     {
         $produto = $this->em->getReference('AG\Produto\Entity\Produto', $id);
+
+        // remover a associação com as tags
+        $produtoRepository = $this->em->getRepository("AG\Produto\Entity\Produto", $id);
+        $produtoRepository->removeAssociationTag($id);
 
         $this->em->remove($produto);
         $this->em->flush();
@@ -109,16 +110,73 @@ class ProdutoService
     {
         $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
 
-        return $repository->find($id);
+        $produto = $repository->find($id);
+
+        return $this->getData($produto);
+    }
+
+    private function getData(ProdutoEntity $produto)
+    {
+        $arrayProduto['id'] = $produto->getId();
+        $arrayProduto['nome'] = $produto->getNome();
+        $arrayProduto['descricao'] = $produto->getDescricao();
+        $arrayProduto['valor'] = $produto->getValor();
+        if($produto->getCategoria()){
+            $arrayProduto['categoria']['id'] = $produto->getCategoria()->getId();
+            $arrayProduto['categoria']['nome'] = $produto->getCategoria()->getNome();
+        } else {
+            $arrayProduto['categoria']['id'] = null;
+            $arrayProduto['categoria']['nome'] = null;
+        }
+        if(count($produto->getTags())>0){
+            foreach($produto->getTags() as $key => $tag){
+                $arrayProduto['tags'][$key]['id'] = $tag->getId();
+                $arrayProduto['tags'][$key]['nome'] = $tag->getNome();
+            }
+        } else {
+            $arrayProduto['tags'] = null;
+        }
+
+        return $arrayProduto;
     }
 
     public function fetchAll()
     {
         $repository = $this->em->getRepository('AG\Produto\Entity\Produto');
 
-        return $repository->findAll();
+        return $this->toArray($repository->findAll());
         //return $repository->getProdutosOrdenados();
         //return $repository->getProdutosPagination(1, 4);
+    }
+
+    public function toArray(array $produtos)
+    {
+        $arrayProdutos = array();
+        foreach($produtos as $key => $produto)
+        {
+            $arrayProdutos[$key]['id'] = $produto->getId();
+            $arrayProdutos[$key]['nome'] = $produto->getNome();
+            $arrayProdutos[$key]['descricao'] = $produto->getDescricao();
+            $arrayProdutos[$key]['valor'] = $produto->getValor();
+            if($produto->getCategoria()){
+                $arrayProdutos[$key]['categoria']['id'] = $produto->getCategoria()->getId();
+                $arrayProdutos[$key]['categoria']['nome'] = $produto->getCategoria()->getNome();
+            } else {
+                $arrayProdutos[$key]['categoria'] = null;
+            }
+
+            if(count($produto->getTags()) > 0)
+            {
+                foreach($produto->getTags() as $k => $tag){
+                    $arrayProdutos[$key]['tags'][$k]['id'] = $tag->getId();
+                    $arrayProdutos[$key]['tags'][$k]['nome'] = $tag->getNome();
+                }
+            } else {
+                $arrayProdutos[$key]['tags'] = null;
+            }
+        }
+
+        return $arrayProdutos;
     }
 
     public  function buscarProduto($options = array())

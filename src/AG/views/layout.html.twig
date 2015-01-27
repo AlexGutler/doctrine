@@ -36,14 +36,8 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="{% block classhome %}{% endblock %}"><a href="{{ path('index') }}">Home </a></li>
-                    <li class="dropdown {% block classprodutos %}{% endblock %}">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Produtos <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ path('produto-novo') }}">Novo</a></li>
-                            <li><a href="{{ path('produtos') }}">Listar</a></li>
-                        </ul>
-                    </li>
+                    <li class="{% block classhome %}{% endblock %}"><a href="{{ path('index') }}">Home</a></li>
+                    <li class="{% block classprodutos %}{% endblock %}"><a href="{{ path('produtos') }}">Produtos</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

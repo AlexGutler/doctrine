@@ -67,13 +67,32 @@ class CategoriaService
     {
         $repository = $this->em->getRepository('AG\Categoria\Entity\Categoria');
 
-        return $repository->find($id);
+        return $this->getData($repository->find($id));
     }
 
     public function fetchAll()
     {
         $repository = $this->em->getRepository('AG\Categoria\Entity\Categoria');
 
-        return $repository->findAll();
+        return $this->toArray($repository->findAll());
+    }
+
+    private function toArray(array $arrayObject)
+    {
+        $newArray = array();
+        foreach($arrayObject as $key => $object){
+            $newArray[$key]['id'] = $object->getId();
+            $newArray[$key]['nome'] = $object->getNome();
+        }
+
+        return $newArray;
+    }
+
+    private function getData(Categoria $categoria)
+    {
+        $arrayCategoria['id'] = $categoria->getId();
+        $arrayCategoria['nome'] = $categoria->getNome();
+
+        return $arrayCategoria;
     }
 }

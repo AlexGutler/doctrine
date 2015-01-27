@@ -1,7 +1,7 @@
 Exemplo API REST E CRUD com Silex e Doctrine
 =====================================
 
-Este é um exemplo de uma api REST utilizando o micro-framework Silex e o Doctrine.
+Este é um exemplo de uma api REST E CRUD utilizando o micro-framework Silex e o ORM Doctrine.
 
 -------------
 
@@ -33,14 +33,14 @@ Utilização
 
 > - /api/categorias/ - {Parâmetro: nome} - insere uma categoria no banco.
 
-> - /api/produtos/ - {Parâmetros: nome, descricao, valor, categoria(o id de uma categoria), tags(uma ou mais tags pelo id separado por ",". ex: 3,7,9)} - insere um produto no banco.
+> - /api/produtos/ - {Parâmetros: nome, descricao, valor, categoria(o id de uma categoria), tags[](passar o id da tag)} - insere um produto no banco.
 
 > **Utilizando o método HTTP PUT**
 > - /api/tags/{id} - {Parâmetro: nome} - altera a tag com o id informado.
 
 > - /api/categorias/{id} - {Parâmetro: nome} - altera a categoria com o id informado.
 
-> - /api/produtos/{id} - {Parâmetros: nome, descricao, valor, categoria(o id de uma categoria), tags(uma ou mais tags pelo id separado por ",". ex: 3,7,9)} - altera o produto com o id informado.
+> - /api/produtos/{id} - {Parâmetros: nome, descricao, valor, categoria(o id de uma categoria), tags[](passar o id da tag)} - altera o produto com o id informado.
 
 > **Utilizando o método HTTP DELETE**
 > - /api/tags/{id} - deleta a tag de acordo com o id informado.
