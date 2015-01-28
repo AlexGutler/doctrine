@@ -65,12 +65,6 @@ class ProdutoControllerProvider implements ControllerProviderInterface
         $controllers->get("/novo", function() use($app){
             $categorias = $app['categoriaService']->fetchAll();
             $tags = $app['tagService']->fetchAll();
-            /*$categorias = array();
-
-            foreach ($data as $categoria)
-            {
-                $categorias[] = $categoria->toArray();
-            }*/
 
             return $app['twig']->render(
                 'Produto/novo.html.twig',
@@ -88,7 +82,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->insert($request);
 
             if (!is_array($result)) {
-                return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto cadastrado com sucesso!']);
+                return $app->redirect('/produtos');
             } else {
                 return $app['twig']->render('Produto/novo.html.twig',
                     [
@@ -104,9 +98,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->delete($id);
             if ($result)
             {
-                //$produtos = $app['produtoService']->fetchAll();
-                //return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => true]);
-                return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto removido com sucesso!']);
+                return $app->redirect('/produtos');
             } else {
                 $app->abort(500, "Erro ao deletar o produto");
             }
@@ -133,8 +125,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->update($request, $id);
 
             if (!is_array($result)) {
-                return $app['twig']->render('Produto/sucesso.html.twig', ['mensagem' => 'Produto alterado com sucesso!']);
-                //return $app->redirect('/produtos');
+                return $app->redirect('/produtos');
             } else {
                 return $app['twig']->render('Produto/novo.html.twig',
                     [
