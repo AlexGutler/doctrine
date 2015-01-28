@@ -28,6 +28,7 @@
                 <th>DESCRIÇÃO</th>
                 <th>VALOR</th>
                 <th>CATEGORIA</th>
+                <th>TAGS</th>
                 <th>AÇÕES</th>
             </tr>
             </tbody>
@@ -40,6 +41,20 @@
                     <td>{{ produto.descricao }}</td>
                     <td>{{ produto.valor }}</td>
                     <td>{% if produto.categoria.id is defined %} {{ produto.categoria.nome }} {% endif %}</td>
+                    <td>
+                        {% set tagsSelected = [] %}
+                        {% if produto.tags is iterable %}
+                            {% for tagSelected in produto.tags %}
+                                {% set tagsSelected = tagsSelected|merge([tagSelected.id]) %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <ul>
+                        {% for tag in tags %}
+                            {% if tag.id in tagsSelected %}<li>{{ tag.nome }}</li>{% endif %}
+                        {% endfor %}
+                        </ul>
+                    </td>
                     <td>
                         <a class="btn btn-primary" href="{{ path('produto-editar', {id: produto.id}) }}">Editar</a>
                         <a class="btn btn-danger" href="{{ path('produto-deletar-form', {id: produto.id}) }}">Remover</a>

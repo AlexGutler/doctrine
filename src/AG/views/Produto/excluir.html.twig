@@ -38,6 +38,7 @@
             <div class="form-group">
                 <label for="categoria" class="col-sm-2 control-label">Categoria</label>
                 <div class="col-sm-2">
+                    {% if categorias != null %}
                     <select class="form-control" name="categoria" disabled="disabled">
                         {% for categoria in categorias %}
                             <option value="{{ categoria.id }}"
@@ -52,6 +53,9 @@
                             </option>
                         {% endfor %}
                     </select>
+                    {% else %}
+                        <label for="" >...</label>
+                    {% endif %}
                 </div>
             </div>
             {% set tagsSelected = [] %}

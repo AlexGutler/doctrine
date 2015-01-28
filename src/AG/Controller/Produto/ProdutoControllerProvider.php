@@ -35,10 +35,12 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             // busca os produtos
             $produtos = $app['produtoService']->fetchPagination($offset, $limit);
 
+            $tags = $app['tagService']->fetchAll();
+
             /* passar os produtos, o deleted, o número de páginas, a página ativa */
             return $app['twig']->render(
                 'Produto/index.html.twig',
-                ['produtos' => $produtos, 'deleted' => false, 'paginas' => $numPages, 'activepage' => $id]
+                ['produtos' => $produtos, 'tags' => $tags, 'paginas' => $numPages, 'activepage' => $id]
             );
         })->bind('produtos-pagination');
 

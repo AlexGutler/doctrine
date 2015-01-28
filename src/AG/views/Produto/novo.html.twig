@@ -41,19 +41,22 @@
             <div class="form-group">
                 <label for="categoria" class="col-sm-2 control-label">Categoria</label>
                 <div class="col-sm-2">
-                    <select class="form-control" name="categoria">
-                    {% for categoria in categorias %}
-                        <option value="{{ categoria.id }}"
-                                {% if not (id == null) %}
-                                    {% if (produto.categoria.id > 0) and (categoria.id == produto.categoria.id) %}
-                                        selected
+                    {% if categorias != null %}
+                        <select class="form-control" name="categoria">
+                        {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}"
+                                    {% if not (id == null) %}
+                                        {% if (produto.categoria.id > 0) and (categoria.id == produto.categoria.id) %}
+                                            selected
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                        >
-                            {{ categoria.nome }}
-                        </option>
-                    {% endfor %}
-                    </select>
+                            >{{ categoria.nome }}
+                            </option>
+                        {% endfor %}
+                        </select>
+                    {% else %}
+                        <label for="" >...</label>
+                    {% endif %}
                 </div>
             </div>
             {% set tagsSelected = [] %}
@@ -67,12 +70,10 @@
                 <div class="col-sm-10">
                     <div class="checkbox">
                         {% for tag in tags %}
-
                             <label>
                                 <input type="checkbox" name="tags[]" id="{{ tag.id }}" value="{{ tag.id }}"
                                     {% if tag.id in tagsSelected %}checked{% endif %}>{{ tag.nome }}
                             </label>
-
                         {% endfor %}
                     </div>
                 </div>

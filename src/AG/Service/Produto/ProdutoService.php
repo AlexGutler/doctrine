@@ -80,9 +80,12 @@ class ProdutoService
         // antes de adicionar as tags é necessário remover as já cadastradas no banco
         $produtoRepository = $this->em->getRepository("AG\Entity\Produto\Produto", $id);
         $produtoRepository->removeAssociationTag($id);
-        foreach($request->get('tags') as $tag){
-            $entityTag = $this->em->getReference("AG\Entity\Tag\Tag", $tag);
-            $produto->addTag($entityTag);
+
+        if($request->get('tags')){
+            foreach($request->get('tags') as $tag){
+                $entityTag = $this->em->getReference("AG\Entity\Tag\Tag", $tag);
+                $produto->addTag($entityTag);
+            }
         }
 
         // aplica no banco
