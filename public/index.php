@@ -10,6 +10,7 @@ use AG\Produto\Entity\Produto,
     AG\Produto\Controller\ApiProdutoControllerProvider;
 use AG\Categoria\Service\CategoriaService,
     AG\Categoria\Controller\ApiCategoriaControllerProvider,
+    AG\Categoria\Controller\CategoriaControllerProvider,
     AG\Categoria\Validator\CategoriaValidator;
 use AG\Tag\Controller\ApiTagControllerProvider,
     AG\Tag\Validator\TagValidator,
@@ -58,6 +59,9 @@ $app['tagService'] = function() use ($app, $em) {
 
 // mount no ControllerProvider de Produtos
 $app->mount('/produtos', new ProdutoControllerProvider());
+
+// mount no ControllerProvider de Categorias
+$app->mount('/categorias', new CategoriaControllerProvider());
 
 // mount no API REST produtos
 $app->mount('/api/produtos', new ApiProdutoControllerProvider());

@@ -16,19 +16,9 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
         // listagem de produtos
         $controllers->get('/', function (Application $app) {
-            //$produtos = $app['produtoService']->fetchAll();
-            //return $app['twig']->render('produtos.twig', ['produtos' => $produtos, 'deleted' => false]);
-
             // direcinar para pagina 1
             return $app->redirect('pag/1');
-//            $user = 'alex';
-//            $app['session']->set('user', array('username' => 'simone'));
-//
-//            if ($user == $app['session']->get('user')) {
-//                return $app->redirect('pag/1');
-//            } else {
-//                $app->abort(501, 'Sessão não encontrada');
-//            }
+
         })->bind('produtos');
 
         // PAGINATION DOS PRODUTOS

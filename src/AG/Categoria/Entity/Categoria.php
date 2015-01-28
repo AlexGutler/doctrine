@@ -4,7 +4,7 @@ namespace AG\Categoria\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AG\Categoria\Entity\CategoriaRepository")
  * @ORM\Table(name="categorias")
  */
 class Categoria
