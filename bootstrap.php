@@ -1,6 +1,15 @@
 <?php
 require_once "vendor/autoload.php";
 
+use AG\Database\DB;
+use AG\Entity\Produto\Produto,
+    AG\Service\Produto\ProdutoService,
+    AG\Utils\Validator\Produto\ProdutoValidator;
+use AG\Service\Categoria\CategoriaService,
+    AG\Utils\Validator\Categoria\CategoriaValidator;
+use AG\Utils\Validator\Tag\TagValidator,
+    AG\Service\Tag\TagService;
+
 /* DOCTRINE */
 use Doctrine\ORM\Tools\Setup,
     Doctrine\ORM\EntityManager,
@@ -65,3 +74,40 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 $app->register(new Silex\Provider\SessionServiceProvider());
+
+
+/* CONFIGURAÇÃO DE DEPENDENCIAS - PIMPLE */
+// criando a conexão
+$config = include __DIR__ . '/src/AG/Config/config.php';
+$app['conn'] = function() use ($config){
+    return (new DB($config['db']['dsn'], $config['db']['dbname'], $config['db']['username'], $config['db']['password']))->getConnection();
+};
+// armazenando a entidade produto
+$app['produto'] = function(){
+    return new Produto();
+};
+// armazenando a dependencia ao ProdutoValidator
+$app['produtoValidator'] = function(){
+    return new ProdutoValidator();
+};
+// armazenar o validator da categoria
+$app['categoriaValidator'] = function(){
+    return new CategoriaValidator();
+};
+// armazenar o validator da tag
+$app['tagValidator'] = function(){
+    return new TagValidator();
+};
+// armazenar o service do produto
+$app['produtoService'] = function() use ($app, $em) {
+    return new ProdutoService($em, $app['produtoValidator']);
+};
+// armazenar o service da categoria
+$app['categoriaService'] = function() use ($app, $em) {
+    return new CategoriaService($em, $app['categoriaValidator']);
+};
+// armazenar o service da tag
+$app['tagService'] = function() use ($app, $em) {
+    return new TagService($em, $app['tagValidator']);
+};
+// ----------------------------------------------------------------

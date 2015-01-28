@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ ."/vendor/autoload.php";
 use AG\Database\DB;
-$config = include __DIR__."/src/AG/config/config.php";
+$config = include __DIR__ . "/src/AG/Config/config.php";
 
 $db = new DB($config['db']['dsn'], $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
 $conn = $db->getConnection();

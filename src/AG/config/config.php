@@ -1,5 +1,5 @@
 <?php
-namespace AG\Database;
+namespace AG\Config;
 
 return array(
     'db' => array(
