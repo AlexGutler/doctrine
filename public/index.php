@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__.'/../bootstrap.php';
 
-use AG\Config\Routes;
+use AG\config\Routes;
 use Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\Request;
 

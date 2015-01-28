@@ -1,5 +1,5 @@
 <?php
-namespace AG\Config;
+namespace AG\config;
 
 use AG\Controller\Categoria\ApiCategoriaControllerProvider;
 use AG\Controller\Categoria\CategoriaControllerProvider;

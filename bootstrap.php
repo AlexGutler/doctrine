@@ -78,7 +78,7 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 
 /* CONFIGURAÇÃO DE DEPENDENCIAS - PIMPLE */
 // criando a conexão
-$config = include __DIR__ . '/src/AG/Config/config.php';
+$config = include __DIR__ . '/src/AG/config/config.php';
 $app['conn'] = function() use ($config){
     return (new DB($config['db']['dsn'], $config['db']['dbname'], $config['db']['username'], $config['db']['password']))->getConnection();
 };
