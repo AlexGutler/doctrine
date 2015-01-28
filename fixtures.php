@@ -10,6 +10,13 @@ echo "Conectado ao banco de dados.\n";
 $conn->query("USE silexdb");
 echo "Schema criado com sucesso.\n";
 
+
+$conn->query("DROP TABLE IF EXISTS produtos_tags;");
+$conn->query("DROP TABLE IF EXISTS produtos;");
+$conn->query("DROP TABLE IF EXISTS tags;");
+$conn->query("DROP TABLE IF EXISTS categorias;");
+
+
 $conn->query("CREATE TABLE categorias (id INT AUTO_INCREMENT NOT NULL, nome VARCHAR(255) NOT NULL, PRIMARY KEY(id))
             DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;");
 
