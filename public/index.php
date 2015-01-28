@@ -13,6 +13,7 @@ use AG\Categoria\Service\CategoriaService,
     AG\Categoria\Controller\CategoriaControllerProvider,
     AG\Categoria\Validator\CategoriaValidator;
 use AG\Tag\Controller\ApiTagControllerProvider,
+    AG\Tag\Controller\TagControllerProvider,
     AG\Tag\Validator\TagValidator,
     AG\Tag\Service\TagService;
 use Symfony\Component\HttpFoundation\Response,
@@ -62,6 +63,9 @@ $app->mount('/produtos', new ProdutoControllerProvider());
 
 // mount no ControllerProvider de Categorias
 $app->mount('/categorias', new CategoriaControllerProvider());
+
+// mount no ControllerProvider de Tags
+$app->mount('/tags', new TagControllerProvider());
 
 // mount no API REST produtos
 $app->mount('/api/produtos', new ApiProdutoControllerProvider());

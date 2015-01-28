@@ -4,7 +4,7 @@ namespace AG\Tag\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AG\Tag\Entity\TagRepository")
  * @ORM\Table(name="tags")
  */
 class Tag

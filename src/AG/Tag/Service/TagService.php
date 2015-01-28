@@ -95,4 +95,23 @@ class TagService
 
         return $arrayTag;
     }
+
+    public  function buscarTags($options = array())
+    {
+        /**
+         * @var $option
+         * @params 'coluna', 'valor'
+         */
+        $repository = $this->em->getRepository('AG\Tag\Entity\Tag');
+
+        return $repository->getBuscarTags($options);
+    }
+
+    public function fetchPagination($offset, $limit)
+    {
+        $repository = $this->em->getRepository('AG\Tag\Entity\Tag');
+        return $repository->fetchPagination($offset, $limit);
+    }
+    /* A consulta SQL abaixo diz "retornar apenas 10 registros, começar no registro 16 (offset 15)":
+      $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15"; */
 }
