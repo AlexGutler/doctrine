@@ -4,7 +4,7 @@
 
 {% block content %}
     <header class="container">
-        <h1> }Excluir Produto</h1>
+        <h1> Excluir Produto</h1>
     </header>
 
     <section class="container">
@@ -38,7 +38,7 @@
             <div class="form-group">
                 <label for="categoria" class="col-sm-2 control-label">Categoria</label>
                 <div class="col-sm-2">
-                    <select class="form-control" name="categoria">
+                    <select class="form-control" name="categoria" disabled="disabled">
                         {% for categoria in categorias %}
                             <option value="{{ categoria.id }}"
                                     {% if not (id == null) %}
@@ -46,7 +46,7 @@
                                             selected
                                         {% endif %}
                                     {% endif %}
-                                    disabled="disabled"
+
                                     >
                                 {{ categoria.nome }}
                             </option>
