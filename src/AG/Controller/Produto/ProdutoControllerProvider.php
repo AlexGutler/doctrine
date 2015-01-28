@@ -94,6 +94,22 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
         // deletar produto
         $controllers->get('/{id}/deletar', function($id) use($app){
+            $produto = $app['produtoService']->fetch($id);
+            $categorias = $app['categoriaService']->fetchAll();
+            $tags = $app['tagService']->fetchAll();
+
+            return $app['twig']->render('Produto/excluir.html.twig',
+                [
+                    'id' => $id,
+                    'produto' => $produto,
+                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'categorias' => $categorias,
+                    'tags' => $tags
+                ]);
+        })->bind('produto-deletar-form');
+
+        // deletar produto
+        $controllers->post('/{id}/deletar', function($id) use($app){
             $result = $app['produtoService']->delete($id);
             if ($result)
             {
@@ -109,7 +125,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $categorias = $app['categoriaService']->fetchAll();
             $tags = $app['tagService']->fetchAll();
 
-            return $app['twig']->render('Produto/novo.html.twig',
+            return $app['twig']->render('Produto/editar.html.twig',
                 [
                     'id' => $id,
                     'produto' => $produto,
@@ -126,7 +142,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             if (!is_array($result)) {
                 return $app->redirect('/produtos');
             } else {
-                return $app['twig']->render('Produto/novo.html.twig',
+                return $app['twig']->render('Produto/editar.html.twig',
                     [
                         'id' => $id,
                         'produto' => $request->request->all(),
