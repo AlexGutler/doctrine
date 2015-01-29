@@ -46,19 +46,14 @@ class ProdutoControllerProvider implements ControllerProviderInterface
 
         // executa e exibe os resultados encontrados da busca pelo nome
         $controllers->post("/find", function(Request $request) use($app){
-            // array com as opções de busca
-            $options = array(
-                'coluna' => 'nome',
-                'valor' => $request->get('nome')
-            );
+            $produtos = $app['produtoService']->buscarProduto($request->get('nome'));
 
-            // faz a busca com os parametros
-            $produtos = $app['produtoService']->buscarProduto($options);
+            $tags = $app['tagService']->fetchAll();
 
             /* passar os produtos, o deleted, o número de páginas */
             return $app['twig']->render(
                 'Produto/index.html.twig',
-                ['produtos' => $produtos, 'deleted' => false, 'paginas' => 0]
+                ['produtos' => $produtos, 'tags' => $tags, 'paginas' => 0]
             );
         })->bind('produto-find');
 

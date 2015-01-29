@@ -180,14 +180,10 @@ class ProdutoService
         return $arrayProdutos;
     }
 
-    public  function buscarProduto($options = array())
+    public function buscarProduto($nome)
     {
-        /**
-         * @var $option
-         * @params 'coluna', 'valor'
-         */
         $repository = $this->em->getRepository('AG\Entity\Produto\Produto');
-        return $repository->getBuscarProdutos($options);
+        return $repository->getBuscarProdutos($nome);
     }
 
     public function fetchPagination($offset, $limit)

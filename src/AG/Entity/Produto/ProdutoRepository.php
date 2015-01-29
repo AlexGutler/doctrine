@@ -38,15 +38,23 @@ class ProdutoRepository extends EntityRepository
         ;
     }
 
-    public function getBuscarProdutos($options = array())
+    public function getBuscarProdutos($nome)
     {
-        $dql = "SELECT p FROM AG\Entity\Produto\Produto p WHERE p.'{$options['coluna']}' LIKE '%{$options['valor']}%'";
+        $dql = "SELECT p FROM AG\Entity\Produto\Produto p WHERE p.nome LIKE '%{$nome}%' OR p.descricao LIKE '%{$nome}%'";
 
         return $this
             ->getEntityManager()
             ->createQuery($dql)
             ->getResult()
         ;
+    }
+
+    public function removeAssociationTag($idProduto)
+    {
+        $sql = "DELETE FROM produtos_tags WHERE produto_id = :id";
+        $params = array('id' => $idProduto);
+
+        return $this->getEntityManager()->getConnection()->prepare($sql)->execute($params);
     }
 
     public function fetchPagination($offset, $limit)
@@ -67,12 +75,4 @@ class ProdutoRepository extends EntityRepository
         $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15";
     */
 
-
-    public function removeAssociationTag($idProduto)
-    {
-        $sql = "DELETE FROM produtos_tags WHERE produto_id = :id";
-        $params = array('id' => $idProduto);
-
-        return $this->getEntityManager()->getConnection()->prepare($sql)->execute($params);
-    }
 }
