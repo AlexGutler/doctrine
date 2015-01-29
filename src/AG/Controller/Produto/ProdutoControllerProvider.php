@@ -85,11 +85,16 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             if (!is_array($result)) {
                 return $app->redirect('/produtos');
             } else {
+                $categorias = $app['categoriaService']->fetchAll();
+                $tags = $app['tagService']->fetchAll();
+
                 return $app['twig']->render('Produto/novo.html.twig',
                     [
                         'id' => null,
                         'errors' => $result,
-                        'produto' => $request->request->all()
+                        'produto' => $request->request->all(),
+                        'categorias' => $categorias,
+                        'tags' => $tags
                     ]);
             }
         })->bind('produto-salvar');
@@ -104,7 +109,6 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 [
                     'id' => $id,
                     'produto' => $produto,
-                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
                     'categorias' => $categorias,
                     'tags' => $tags
                 ]);
@@ -144,11 +148,17 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             if (!is_array($result)) {
                 return $app->redirect('/produtos');
             } else {
+                $produto = $app['produtoService']->fetch($id);
+                $categorias = $app['categoriaService']->fetchAll();
+                $tags = $app['tagService']->fetchAll();
+
                 return $app['twig']->render('Produto/editar.html.twig',
                     [
                         'id' => $id,
-                        'produto' => $request->request->all(),
-                        'errors' => $result
+                        'produto' => $produto,
+                        'errors' => $result,
+                        'categorias' => $categorias,
+                        'tags' => $tags
                     ]);
             }
         })->bind('produto-atualizar');

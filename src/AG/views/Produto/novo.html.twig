@@ -44,14 +44,7 @@
                     {% if categorias != null %}
                         <select class="form-control" name="categoria">
                         {% for categoria in categorias %}
-                            <option value="{{ categoria.id }}"
-                                    {% if not (id == null) %}
-                                        {% if (produto.categoria.id > 0) and (categoria.id == produto.categoria.id) %}
-                                            selected
-                                        {% endif %}
-                                    {% endif %}
-                            >{{ categoria.nome }}
-                            </option>
+                            <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
                         {% endfor %}
                         </select>
                     {% else %}
@@ -59,12 +52,7 @@
                     {% endif %}
                 </div>
             </div>
-            {% set tagsSelected = [] %}
-            {% if produto.tags is iterable %}
-                {% for tagSelected in produto.tags %}
-                    {% set tagsSelected = tagsSelected|merge([tagSelected.id]) %}
-                {% endfor %}
-            {% endif %}
+
             <div class="form-group">
                 <label for="categoria" class="col-sm-2 control-label">Tags</label>
                 <div class="col-sm-10">
@@ -72,8 +60,7 @@
                         <div class="checkbox">
                             {% for tag in tags %}
                                 <label>
-                                    <input type="checkbox" name="tags[]" id="{{ tag.id }}" value="{{ tag.id }}"
-                                        {% if tag.id in tagsSelected %}checked{% endif %}>{{ tag.nome }}
+                                    <input type="checkbox" name="tags[]" id="{{ tag.id }}" value="{{ tag.id }}">{{ tag.nome }}
                                 </label>
                             {% endfor %}
                         </div>
