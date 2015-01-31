@@ -57,19 +57,15 @@ class ProdutoService
         return $produtoEntity;
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return array|bool|\Doctrine\Common\Proxy\Proxy|null|object
+     * @throws \Doctrine\ORM\ORMException
+     */
     public function update(Request $request, $id)
     {
         $produto = $this->em->getReference('AG\Entity\Produto\Produto', $id);
-
-        if($request->files->get('path'))
-        {
-            $path = $request->files->get('path');
-            $produtoAntes = $produto;
-            $produto->setFile($request->files->get('path'));
-            self::removeImage($produtoAntes);
-        } else {
-            $produto->setFile($produto->getFile());
-        }
 
         $produto
             ->setNome($request->get('nome'))
@@ -100,7 +96,13 @@ class ProdutoService
             }
         }
 
+        $data['path'] = $request->files->get('path');
 
+        if($data['path'] != null){
+            $produtoAntes = $produtoRepository->find($id);
+            $this->removeImage($produtoAntes);
+            $produto->setFile($data['path']);
+        }
 
         // aplica no banco
         $this->em->persist($produto);
