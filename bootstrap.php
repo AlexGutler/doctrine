@@ -75,6 +75,7 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 $app->register(new Silex\Provider\SessionServiceProvider());
 
+$app['upload_folder'] = __DIR__ . '/public/imagens';
 
 /* CONFIGURAÇÃO DE DEPENDENCIAS - PIMPLE */
 // criando a conexão

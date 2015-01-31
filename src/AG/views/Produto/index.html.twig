@@ -23,7 +23,7 @@
         <table class="table table-hover">
             <tbody>
             <tr>
-                <th>ID</th>
+                <th></th>
                 <th>NOME</th>
                 <th>DESCRIÇÃO</th>
                 <th>VALOR</th>
@@ -36,7 +36,7 @@
 
             {% for produto in produtos %}
                 <tr>
-                    <td>{{ produto.id }}</td>
+                    <td><img src="/uploads/imagens/{{ produto.path }}" alt="" width="70"/></td>
                     <td>{{ produto.nome }}</td>
                     <td>{{ produto.descricao }}</td>
                     <td>{{ produto.valor }}</td>

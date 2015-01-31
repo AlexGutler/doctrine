@@ -8,13 +8,13 @@
     </header>
 
     <section class="container">
-        <form class="form-horizontal" method="post"
+        <form class="form-horizontal" method="post" enctype="multipart/form-data"
               action="{% if id == null %}{{ path('produto-salvar') }}{% else %}{{ path('produto-atualizar', {id: id}) }}{% endif %}">
             <input type="hidden" id="id" name="id" value="{% if id == null %}{% else %}{{ id }}{% endif %}">
             <div class="form-group">
                 <label for="nome" class="col-sm-2 control-label">Nome</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="nome" name="nome" required value="{% if produto.nome == null %}{% else %}{{ produto.nome }}{% endif %}">
+                    <input type="text" class="form-control" id="nome" name="nome" autofocus="true" required value="{% if produto.nome == null %}{% else %}{{ produto.nome }}{% endif %}">
                     {% if errors.nome != null %}
                         <span class="alert-danger col-md-12">{{ errors.nome }}</span>
                     {% endif %}
@@ -36,6 +36,15 @@
                     {% if errors.valor != null %}
                         <span class="alert-danger col-md-12">{{ errors.valor }}</span>
                     {% endif %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="path" class="col-sm-2 control-label">Imagem</label>
+                <div class="col-sm-10">
+                    <input type="file"  class="" name="path">
+                    {#{% if errors.valor != null %}#}
+                        {#<span class="alert-danger col-md-12">{{ errors.valor }}</span>#}
+                    {#{% endif %}#}
                 </div>
             </div>
             <div class="form-group">

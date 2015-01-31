@@ -3,10 +3,13 @@ namespace AG\Entity\Produto;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use AG\Service\Produto\ProdutoService;
 
 /**
  * @ORM\Entity(repositoryClass="AG\Entity\Produto\ProdutoRepository")
  * @ORM\Table(name="produtos")
+ * @ORM\HasLifecycleCallbacks
  */
 class Produto
 {
@@ -46,6 +49,96 @@ class Produto
      *     )
      */
     private $tags;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    public $path;
+
+    private $file;
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function createPath()
+    {
+        $this->path = ProdutoService::uploadImage($this);
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function removePath()
+    {
+        return ProdutoService::removeImage($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @param mixed $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+
+    public function getAbsolutePath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir().'/'.$this->path;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadDir().'/'.$this->path;
+    }
+
+    public function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../../public/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/imagens';
+    }
+
+    public function getUploadAcceptedTypes()
+    {
+        return array('jpg', 'jpeg', 'png');
+    }
 
     public function __construct()
     {
@@ -159,45 +252,5 @@ class Produto
         $this->valor = $valor;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'id-> '.$this->getId().' | nome-> '.$this->getNome().
-        ' | descricao-> '.$this->getDescricao().' | valor-> '.$this->getValor().
-        ' | categoria_id->'.$this->getCategoria()->getId();
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        if($this->getTags()){
-            $tags = array();
-            foreach ($this->getTags() as $tag) {
-                $tags[] = $tag->getNome();
-            }
-        } else {
-            $tags = null;
-        }
-
-        if ($this->getCategoria()) {
-            $categoria = $this->getCategoria()->toArray();
-        } else {
-            $categoria = null;
-        }
-
-        return [
-            'id' => $this->getId(),
-            'nome' => $this->getNome(),
-            'descricao' => $this->getDescricao(),
-            'valor' => $this->getValor(),
-            'tags' => $tags,
-            'categoria' => $categoria
-        ];
     }
 }

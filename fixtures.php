@@ -35,7 +35,7 @@ $stmt->execute();
 
 $conn->query("CREATE TABLE produtos (id INT AUTO_INCREMENT NOT NULL,
             categoria_id INT DEFAULT NULL, nome VARCHAR(255) NOT NULL, descricao LONGTEXT NOT NULL,
-            valor DOUBLE PRECISION NOT NULL, INDEX IDX_3E524353397707A (categoria_id), PRIMARY KEY(id))
+            valor DOUBLE PRECISION NOT NULL, path VARCHAR(255) DEFAULT NULL, INDEX IDX_3E524353397707A (categoria_id), PRIMARY KEY(id))
             DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;");
 
 $conn->query("CREATE TABLE produtos_tags (produto_id INT NOT NULL, tag_id INT NOT NULL,
@@ -49,9 +49,9 @@ $conn->query("ALTER TABLE produtos_tags ADD CONSTRAINT FK_F00CAA2A105CFD56 FOREI
 
 $conn->query("ALTER TABLE produtos_tags ADD CONSTRAINT FK_F00CAA2ABAD26311 FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE;");
 
-$sql = "INSERT INTO produtos (id, nome, descricao, valor, categoria_id) VALUES
-(1, 'FIFA 15', 'Eletronic Arts, PS4, Português', 152.90, 2),
-(2, 'Smart TV Samsung', 'Smart TV 3D LED 55” 4K Ultra HD Curva Samsung ', 5299.00, 1);";
+$sql = "INSERT INTO produtos (id, nome, descricao, valor, categoria_id, path) VALUES
+(1, 'FIFA 15', 'Eletronic Arts, PS4, Português', 152.90, 2, '94bb3c03458883c94c78f8211020621d37bb942d.jpg'),
+(2, 'Smart TV Samsung', 'Smart TV 3D LED 55” 4K Ultra HD Curva Samsung ', 5299.00, 1, 'e50f30a3642c4d7ad4cb541507ce821cdffb9f6e.jpg');";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 

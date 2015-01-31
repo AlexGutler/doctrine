@@ -49,6 +49,8 @@ class ProdutoService
             }
         }
 
+        $produtoEntity->setFile($request->files->get('path'));
+
         $this->em->persist($produtoEntity);
         $this->em->flush();
 
@@ -58,6 +60,16 @@ class ProdutoService
     public function update(Request $request, $id)
     {
         $produto = $this->em->getReference('AG\Entity\Produto\Produto', $id);
+
+        if($request->files->get('path'))
+        {
+            $path = $request->files->get('path');
+            $produtoAntes = $produto;
+            $produto->setFile($request->files->get('path'));
+            self::removeImage($produtoAntes);
+        } else {
+            $produto->setFile($produto->getFile());
+        }
 
         $produto
             ->setNome($request->get('nome'))
@@ -87,6 +99,8 @@ class ProdutoService
                 $produto->addTag($entityTag);
             }
         }
+
+
 
         // aplica no banco
         $this->em->persist($produto);
@@ -139,6 +153,7 @@ class ProdutoService
         } else {
             $arrayProduto['tags'] = null;
         }
+        $arrayProduto['path'] = $produto->getPath();
 
         return $arrayProduto;
     }
@@ -175,6 +190,7 @@ class ProdutoService
             } else {
                 $arrayProdutos[$key]['tags'] = null;
             }
+            $arrayProdutos['path'] = $produto->getPath();
         }
 
         return $arrayProdutos;
@@ -193,4 +209,38 @@ class ProdutoService
     }
     /* A consulta SQL abaixo diz "retornar apenas 10 registros, começar no registro 16 (offset 15)":
        $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15"; */
+
+    static function uploadImage(ProdutoEntity $produto)
+    {
+        if (null === $produto->getFile()) {
+            return;
+        }
+
+        if(!in_array($produto->getFile()->getClientOriginalExtension(), $produto->getUploadAcceptedTypes()))
+            throw new \InvalidArgumentException("Tipo de arquivo não permitido");
+
+        $filename = sha1($produto->getFile()->getClientOriginalName() . date('Y-m-d H:i:s')) . '.' . $produto->getFile()->getClientOriginalExtension();
+
+        $produto->getFile()->move(
+            $produto->getUploadRootDir(),
+            $filename
+        );
+
+        return $filename;
+    }
+
+    /**
+     * @param ProdutoEntity $produto
+     */
+    static function removeImage(ProdutoEntity $produto)
+    {
+        if (null === $produto->getPath()) {
+            return;
+        }
+
+        if(file_exists($produto->getAbsolutePath()))
+            unlink($produto->getAbsolutePath());
+
+        return true;
+    }
 }
