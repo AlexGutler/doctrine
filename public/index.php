@@ -20,7 +20,7 @@ $app->error(function (\Exception $e, $code) use ($app) {
     {
         return new Response( $app['twig']->render('404.html.twig'), 404);
     }
-    return new Response('Desculpe, aconteceu algo errado.<br> Erro: '.$e->getMessage(), $code);
+    //return new Response('Desculpe, aconteceu algo errado.<br> Erro: '.$e->getMessage(), $code);
 });
 
 Request::enableHttpMethodParameterOverride();

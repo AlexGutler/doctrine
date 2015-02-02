@@ -131,11 +131,6 @@ class Produto
         return 'uploads/imagens';
     }
 
-    public function getUploadAcceptedTypes()
-    {
-        return array('jpg', 'jpeg', 'png');
-    }
-
     public function __construct()
     {
         $this->tags = new ArrayCollection();

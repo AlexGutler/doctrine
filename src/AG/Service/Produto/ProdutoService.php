@@ -21,10 +21,11 @@ class ProdutoService
 
     public function insert(Request $request)
     {
-        //$produtoEntity = new ProdutoEntity();
         $this->produto->setNome($request->get('nome'))
                       ->setDescricao($request->get('descricao'))
                       ->setValor($request->get('valor'));
+
+        $this->produto->setFile($request->files->get('path'));
 
         $isValid = $this->produtoValidator->validate($this->produto);
 
@@ -51,8 +52,6 @@ class ProdutoService
             }
         }
 
-        $this->produto->setFile($request->files->get('path'));
-
         $this->em->persist($this->produto);
         $this->em->flush();
 
@@ -67,6 +66,11 @@ class ProdutoService
             ->setNome($request->get('nome'))
             ->setDescricao($request->get('descricao'))
             ->setValor($request->get('valor'));
+
+        if($request->files->get('path')){
+            self::removeImage($this->produto);
+            $this->produto->setFile($request->files->get('path'));
+        }
 
         $isValid = $this->produtoValidator->validate($this->produto);
 
@@ -90,13 +94,6 @@ class ProdutoService
                 $entityTag = $this->em->getReference("AG\Entity\Tag\Tag", $tag);
                 $this->produto->addTag($entityTag);
             }
-        }
-
-
-        if($request->files->get('path')){
-            $produtoAntes = $produtoRepository->find($this->produto->getId());
-            self::removeImage($produtoAntes);
-            $this->produto->setFile($request->files->get('path'));
         }
 
         // aplica no banco
@@ -204,17 +201,12 @@ class ProdutoService
         $repository = $this->em->getRepository('AG\Entity\Produto\Produto');
         return $repository->fetchPagination($offset, $limit);
     }
-    /* A consulta SQL abaixo diz "retornar apenas 10 registros, começar no registro 16 (offset 15)":
-       $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15"; */
 
     static public function uploadImage(ProdutoEntity $produto)
     {
         if (null === $produto->getFile()) {
             return $produto->getPath();
         }
-
-        if(!in_array($produto->getFile()->getClientOriginalExtension(), $produto->getUploadAcceptedTypes()))
-            throw new \InvalidArgumentException("Tipo de arquivo não permitido");
 
         $filename = sha1($produto->getFile()->getClientOriginalName() . date('Y-m-d H:i:s')) . '.' . $produto->getFile()->getClientOriginalExtension();
 

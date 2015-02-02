@@ -66,7 +66,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 'Produto/novo.html.twig',
                 [
                     'id' => null,
-                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null, 'file' => null),
                     'produto' => array('nome' => null, 'descricao' => null, 'valor' => null, 'categoria' => null, 'tags' => null),
                     'categorias' => $categorias,
                     'tags' => $tags
@@ -130,7 +130,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 [
                     'id' => $id,
                     'produto' => $produto,
-                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null),
+                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null, 'file' => null),
                     'categorias' => $categorias,
                     'tags' => $tags
                 ]);

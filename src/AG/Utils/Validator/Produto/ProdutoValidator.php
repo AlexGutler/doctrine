@@ -12,7 +12,7 @@ class ProdutoValidator extends Validator
     public function validate(Produto $produto)
     {
         $this->produto = $produto;
-        $this->erros = array('nome' => null, 'descricao' => null, 'valor' => null);
+        $this->erros = array('nome' => null, 'descricao' => null, 'valor' => null, 'file' => null);
 
         if($this->isEmpty($this->produto->getNome()))
         {
@@ -41,6 +41,13 @@ class ProdutoValidator extends Validator
             $this->erros['valor'] = "{{ Valor }} Não pode ser zero.";
         }
 
+        if($produto->getFile() <> null){
+            if(!in_array($produto->getFile()->getClientOriginalExtension(), self::getUploadAcceptedTypes()))
+            {
+                $this->erros['file'] = "{{ Imagem }} Não é um formato permitido.";
+            }
+        }
+
         // verifica se algum erro foi encontrado
         foreach($this->erros as $erro)
         {
@@ -51,5 +58,13 @@ class ProdutoValidator extends Validator
         }
 
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUploadAcceptedTypes()
+    {
+        return array('jpg', 'jpeg', 'png');
     }
 }
