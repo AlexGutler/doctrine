@@ -42,7 +42,8 @@
                 <label for="path" class="col-sm-2 control-label">Imagem</label>
                 <div class="col-sm-10">
                     <input type="file"  class="" name="path">
-                    <img src="/uploads/imagens/{{ produto.path }}" width="150" alt=""/>
+                    {% if produto.path != null %} <img src="/uploads/imagens/{{ produto.path }}" alt="" width="70"/>
+                    {% else %}<img src="/uploads/imagens/no-image.png" alt="" width="70"/>{% endif %}
                     {% if errors.file != null %}
                         <span class="alert-danger col-md-12">{{ errors.file }}</span>
                     {% endif %}

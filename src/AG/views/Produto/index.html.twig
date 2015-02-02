@@ -36,7 +36,10 @@
 
             {% for produto in produtos %}
                 <tr>
-                    <td><img src="/uploads/imagens/{{ produto.path }}" alt="" width="70"/></td>
+                    <td>
+                        {% if produto.path != null %} <img src="/uploads/imagens/{{ produto.path }}" alt="" width="70"/>
+                        {% else %}<img src="/uploads/imagens/no-image.png" alt="" width="70"/>{% endif %}
+                    </td>
                     <td>{{ produto.nome }}</td>
                     <td>{{ produto.descricao }}</td>
                     <td>{{ produto.valor }}</td>
