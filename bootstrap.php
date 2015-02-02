@@ -101,7 +101,7 @@ $app['tagValidator'] = function(){
 };
 // armazenar o service do produto
 $app['produtoService'] = function() use ($app, $em) {
-    return new ProdutoService($em, $app['produtoValidator']);
+    return new ProdutoService($app['produto'], $em, $app['produtoValidator']);
 };
 // armazenar o service da categoria
 $app['categoriaService'] = function() use ($app, $em) {

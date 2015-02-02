@@ -8,7 +8,7 @@
     </header>
 
     <section class="container">
-        <form class="form-horizontal" method="post"
+        <form class="form-horizontal" method="post" enctype="multipart/form-data"
               action="{{ path('produto-atualizar', {id: id}) }}">
             <input type="hidden" id="id" name="id" value="{{ produto.id }}">
             <div class="form-group">
@@ -42,7 +42,7 @@
                 <label for="path" class="col-sm-2 control-label">Imagem</label>
                 <div class="col-sm-10">
                     <input type="file"  class="" name="path">
-                    {% if produto.path is defined %}<img src="/uploads/imagens/{{ produto.path }}" width="150" alt=""/>{% endif %}
+                    <img src="/uploads/imagens/{{ produto.path }}" width="150" alt=""/>
                 </div>
             </div>
             <div class="form-group">

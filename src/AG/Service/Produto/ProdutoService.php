@@ -10,21 +10,23 @@ class ProdutoService
 {
     private $produtoValidator;
     private $em;
+    private $produto;
 
-    public function __construct(EntityManager $em, ProdutoValidator $produtoValidator)
+    public function __construct(ProdutoEntity $produto, EntityManager $em, ProdutoValidator $produtoValidator)
     {
+        $this->produto = $produto;
         $this->em = $em;
         $this->produtoValidator = $produtoValidator;
     }
 
     public function insert(Request $request)
     {
-        $produtoEntity = new ProdutoEntity();
-        $produtoEntity->setNome($request->get('nome'))
+        //$produtoEntity = new ProdutoEntity();
+        $this->produto->setNome($request->get('nome'))
                       ->setDescricao($request->get('descricao'))
                       ->setValor($request->get('valor'));
 
-        $isValid = $this->produtoValidator->validate($produtoEntity);
+        $isValid = $this->produtoValidator->validate($this->produto);
 
         if(true !== $isValid)
         {
@@ -34,7 +36,7 @@ class ProdutoService
         if($request->get('categoria'))
         {
             $categoriaEntity = $this->em->getReference("AG\Entity\Categoria\Categoria", $request->get('categoria'));
-            $produtoEntity->setCategoria($categoriaEntity);
+            $this->produto->setCategoria($categoriaEntity);
         }
 
         if($request->get('tags'))
@@ -45,34 +47,28 @@ class ProdutoService
             {
                 // pega pela referencia a tag com o id da $rowTag e o adiciona no produto
                 $tagEntity = $this->em->getReference("AG\Entity\Tag\Tag", $rowTag);
-                $produtoEntity->addTag($tagEntity);
+                $this->produto->addTag($tagEntity);
             }
         }
 
-        $produtoEntity->setFile($request->files->get('path'));
+        $this->produto->setFile($request->files->get('path'));
 
-        $this->em->persist($produtoEntity);
+        $this->em->persist($this->produto);
         $this->em->flush();
 
-        return $produtoEntity;
+        return $this->produto;
     }
 
-    /**
-     * @param Request $request
-     * @param $id
-     * @return array|bool|\Doctrine\Common\Proxy\Proxy|null|object
-     * @throws \Doctrine\ORM\ORMException
-     */
     public function update(Request $request, $id)
     {
-        $produto = $this->em->getReference('AG\Entity\Produto\Produto', $id);
+        $this->produto = $this->em->getReference('AG\Entity\Produto\Produto', $id);
 
-        $produto
+        $this->produto
             ->setNome($request->get('nome'))
             ->setDescricao($request->get('descricao'))
             ->setValor($request->get('valor'));
 
-        $isValid = $this->produtoValidator->validate($produto);
+        $isValid = $this->produtoValidator->validate($this->produto);
 
         if(true !== $isValid)
         {
@@ -82,44 +78,43 @@ class ProdutoService
         if($request->get('categoria'))
         {
             $categoriaEntity = $this->em->getReference("AG\Entity\Categoria\Categoria", $request->get('categoria'));
-            $produto->setCategoria($categoriaEntity);
+            $this->produto->setCategoria($categoriaEntity);
         }
 
         // antes de adicionar as tags é necessário remover as já cadastradas no banco
-        $produtoRepository = $this->em->getRepository("AG\Entity\Produto\Produto", $id);
-        $produtoRepository->removeAssociationTag($id);
+        $produtoRepository = $this->em->getRepository("AG\Entity\Produto\Produto", $this->produto->getId());
+        $produtoRepository->removeAssociationTag($this->produto->getId());
 
         if($request->get('tags')){
             foreach($request->get('tags') as $tag){
                 $entityTag = $this->em->getReference("AG\Entity\Tag\Tag", $tag);
-                $produto->addTag($entityTag);
+                $this->produto->addTag($entityTag);
             }
         }
 
-        $data['path'] = $request->files->get('path');
 
-        if($data['path'] != null){
-            $produtoAntes = $produtoRepository->find($id);
-            $this->removeImage($produtoAntes);
-            $produto->setFile($data['path']);
+        if($request->files->get('path')){
+            $produtoAntes = $produtoRepository->find($this->produto->getId());
+            self::removeImage($produtoAntes);
+            $this->produto->setFile($request->files->get('path'));
         }
 
         // aplica no banco
-        $this->em->persist($produto);
+        $this->em->persist($this->produto);
         $this->em->flush();
 
-        return $produto;
+        return $this->produto;
     }
 
     public function delete($id)
     {
-        $produto = $this->em->getReference('AG\Entity\Produto\Produto', $id);
+        $this->produto = $this->em->getReference('AG\Entity\Produto\Produto', $id);
 
         // remover a associação com as tags
         $produtoRepository = $this->em->getRepository("AG\Entity\Produto\Produto", $id);
         $produtoRepository->removeAssociationTag($id);
 
-        $this->em->remove($produto);
+        $this->em->remove($this->produto);
         $this->em->flush();
 
         return true;
@@ -129,9 +124,9 @@ class ProdutoService
     {
         $repository = $this->em->getRepository('AG\Entity\Produto\Produto');
 
-        $produto = $repository->find($id);
+        $this->produto = $repository->find($id);
 
-        return $this->getData($produto);
+        return $this->getData($this->produto);
     }
 
     private function getData(ProdutoEntity $produto)
@@ -147,7 +142,7 @@ class ProdutoService
             $arrayProduto['categoria']['id'] = null;
             $arrayProduto['categoria']['nome'] = null;
         }
-        if(count($produto->getTags())>0){
+        if(count($produto->getTags()) > 0){
             foreach($produto->getTags() as $key => $tag){
                 $arrayProduto['tags'][$key]['id'] = $tag->getId();
                 $arrayProduto['tags'][$key]['nome'] = $tag->getNome();
@@ -212,10 +207,10 @@ class ProdutoService
     /* A consulta SQL abaixo diz "retornar apenas 10 registros, começar no registro 16 (offset 15)":
        $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15"; */
 
-    static function uploadImage(ProdutoEntity $produto)
+    static public function uploadImage(ProdutoEntity $produto)
     {
         if (null === $produto->getFile()) {
-            return;
+            return $produto->getPath();
         }
 
         if(!in_array($produto->getFile()->getClientOriginalExtension(), $produto->getUploadAcceptedTypes()))
@@ -231,10 +226,8 @@ class ProdutoService
         return $filename;
     }
 
-    /**
-     * @param ProdutoEntity $produto
-     */
-    static function removeImage(ProdutoEntity $produto)
+
+    static public function removeImage(ProdutoEntity $produto)
     {
         if (null === $produto->getPath()) {
             return;
