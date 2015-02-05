@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}AG || Autenticação{% endblock %}
+
+{% block content %}
+    <header class="container">
+        <h1>FAÇA O LOGIN ABAIXO</h1>
+    </header>
+
+    <section class="container">
+        <form class="form-horizontal" method="post"
+              action="{{ path('login_auth') }}">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="email" class="form-control" name="email" value="" placeholder="Seu e-mail">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" name="password" value="" placeholder="Sua senha">
+                </div>
+            </div>
+            <div class="form-group">
+                <a href="{{ path('forgot_password') }}" class="col-sm-4">Esqueci minha senha</a>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="col-sm-4 btn btn-success">ENTRAR</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+{% block form %}
+
+{% endblock %}
+
+{% block classhome %}{% endblock %}
+{% block classprodutos %}{% endblock %}
+{% block classcategorias %}active{% endblock %}
+{% block classtags %}{% endblock %}

@@ -10,6 +10,37 @@ $app->get("/", function() use($app){
     return $app['twig']->render('index.html.twig', []);
 })->bind('index');
 
+
+
+$app->get("/login", function() use($app){
+    return $app['twig']->render('login.html.twig', []);
+})->bind('login');
+
+
+$app->post("/login", function(Request $request) use($app){
+    if ($request->get('email') == 'teste@email.com' &&
+        $request->get('password') == '1234') {
+    }
+
+    $user = new \Symfony\Component\Security\Core\User\User('User Teste', '1234',
+        array('admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==')),
+        true, true, true, true);
+
+    // find the encoder for a UserInterface instance
+    $encoder = $app['security.encoder_factory']->getEncoder($user);
+
+    // compute the encoded password for foo
+    $password = $encoder->encodePassword('foo', $user->getSalt());
+
+    $app->redirect('/tags');
+})->bind('login_auth');
+
+
+
+$app->get("/resetting/request", function() use($app){
+    return "Esqueci minha senha.";
+})->bind('forgot_password');
+
 // cria as rotas
 $routes = new Routes();
 $routes->begin($app);
