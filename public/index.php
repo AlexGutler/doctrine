@@ -22,15 +22,7 @@ $app->post("/login", function(Request $request) use($app){
         $request->get('password') == '1234') {
     }
 
-    $user = new \Symfony\Component\Security\Core\User\User('User Teste', '1234',
-        array('admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==')),
-        true, true, true, true);
-
-    // find the encoder for a UserInterface instance
-    $encoder = $app['security.encoder_factory']->getEncoder($user);
-
-    // compute the encoded password for foo
-    $password = $encoder->encodePassword('foo', $user->getSalt());
+    // o que fazer aqui para que o security entenda que há um usuário logado ???
 
     $app->redirect('/tags');
 })->bind('login_auth');

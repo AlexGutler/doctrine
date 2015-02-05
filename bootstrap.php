@@ -120,7 +120,6 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
             'http' => true,
             'form' => array('login_path' => '/login'),
             'users' => array(
-                // raw password is foo
                 'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
             ),
         )
