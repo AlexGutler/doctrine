@@ -19,12 +19,10 @@ $app->get("/login", function() use($app){
 
 $app->post("/login", function(Request $request) use($app){
     if ($request->get('email') == 'teste@email.com' &&
-        $request->get('password') == '1234') {
+        $request->get('password') == '1234')
+    {
+        // o que fazer aqui para que o security entenda que há um usuário logado ???
     }
-
-    // o que fazer aqui para que o security entenda que há um usuário logado ???
-
-    $app->redirect('/tags');
 })->bind('login_auth');
 
 
