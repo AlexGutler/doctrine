@@ -9,10 +9,10 @@
 
     <section class="container">
         <form class="form-horizontal" method="post"
-              action="{{ path('login_auth') }}">
+              action="{{ path('login_check') }}">
             <div class="form-group">
                 <div class="col-sm-4">
-                    <input type="email" class="form-control" name="email" value="" placeholder="Seu e-mail">
+                    <input type="email" class="form-control" name="email"  value="{{ last_username }}" placeholder="Seu e-mail">
                 </div>
             </div>
             <div class="form-group">
@@ -24,7 +24,7 @@
                 <a href="{{ path('forgot_password') }}" class="col-sm-4">Esqueci minha senha</a>
             </div>
             <div class="form-group">
-                <button type="submit" class="col-sm-4 btn btn-success">ENTRAR</button>
+                <button type="submit" class="col-sm-4 btn btn-success">LOGIN</button>
             </div>
         </form>
     </section>
