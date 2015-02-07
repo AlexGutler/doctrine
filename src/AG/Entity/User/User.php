@@ -24,17 +24,17 @@ class User implements UserInterface
     protected $username;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     protected $password;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     protected $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     protected $roles = array('ROLE_USER');
 
@@ -43,10 +43,6 @@ class User implements UserInterface
      */
     protected $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $updatedAt;
 
     public function __construct()
     {
@@ -111,16 +107,6 @@ class User implements UserInterface
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
     }
 
     public function eraseCredentials()

@@ -131,6 +131,7 @@ $app->register(new SecurityServiceProvider(), array(
         'admin' => array(
             'anonymous' => true,
             'pattern' => '^/',
+            'http' => true,
             'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
             'users' => $app->share(function() use ($app) {
                 return $app['user_repository'];
