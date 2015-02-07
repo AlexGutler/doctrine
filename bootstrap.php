@@ -10,6 +10,9 @@ use AG\Service\Categoria\CategoriaService,
 use AG\Utils\Validator\Tag\TagValidator,
     AG\Service\Tag\TagService;
 
+use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
+
 /* DOCTRINE */
 use Doctrine\ORM\Tools\Setup,
     Doctrine\ORM\EntityManager,
@@ -73,8 +76,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
-$app->register(new Silex\Provider\SessionServiceProvider());
-
 $app['upload_folder'] = __DIR__ . '/public/imagens';
 
 /* CONFIGURAÇÃO DE DEPENDENCIAS - PIMPLE */
@@ -113,16 +114,34 @@ $app['tagService'] = function() use ($app, $em) {
 };
 // ----------------------------------------------------------------
 
-$app->register(new Silex\Provider\SecurityServiceProvider(), array(
+$app['user_repository'] = $app->share(function($app) use($em){
+    $user = new AG\Entity\User\User;
+
+    $repo = $em->getRepository('AG\Entity\User\User');
+
+    $repo->setPasswordEncoder($app['security.encoder_factory']->getEncoder($user));
+
+    return $repo;
+});
+
+$app->register(new SessionServiceProvider());
+
+$app->register(new SecurityServiceProvider(), array(
     'security.firewalls' => array(
-        'tags' => array(
-            'pattern' => '^/tags',
-            'http' => true,
-            'form' => array('login_path' => '/login', 'check_path' => '/login_check'),
-            'users' => array(
-                'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-            ),
+        'admin' => array(
+            'anonymous' => true,
+            'pattern' => '^/',
+            'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
+            'users' => $app->share(function() use ($app) {
+                return $app['user_repository'];
+            }),
+            'logout' => array('logout_path' => '/admin/logout')
         )
     ),
 ));
+
+$app['security.access_rules'] = array(
+    array('^/admin' => 'ROLE_ADMIN')
+);
+
 

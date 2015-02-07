@@ -60,5 +60,21 @@ $sql = "INSERT INTO produtos_tags (produto_id, tag_id) VALUES
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 
+$conn->query("CREATE TABLE `users` (
+`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(100) NOT NULL DEFAULT '',
+  `password` VARCHAR(255) NOT NULL DEFAULT '',
+  `roles` VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+# Password is: password
+$sql = "INSERT INTO `users` (`username`, `password`, `roles`)
+              VALUES ('johann', 'BFEQkknI/c+Nd7BaG7AaiyTfUFby/pkMHy3UsYqKqDcmvHoPRX/ame9TnVuOV2GrBH0JK9g4koW+CgTYI9mK+w==',
+              'ROLE_USER');";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+
 echo "Tabelas criadas com sucesso.\n";
 echo "Dados inseridos com sucesso.\n";

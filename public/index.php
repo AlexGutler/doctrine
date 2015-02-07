@@ -17,18 +17,16 @@ $app->get("/login", function(Request $request) use($app){
         'error'         => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
     ));
-})->bind('login');
+});
 
+$app->get("/criaAdmin", function() use($app){
+    $repo = $app['user_repository'];
+    $repo->createAdminUser('admin', 'admin');
+});
 
-$app->post("/login", function(Request $request) use($app){
-    if ($request->get('email') == 'teste@email.com' &&
-        $request->get('password') == '1234')
-    {
-        // o que fazer aqui para que o security entenda que há um usuário logado ???
-    }
-})->bind('login_auth');
-
-
+//$app->post("/login_check", function(Request $request) use($app){
+//    // o que fazer aqui para que o security entenda que há um usuário logado ???
+//})->bind('login_check');
 
 $app->get("/resetting/request", function() use($app){
     return "Esqueci minha senha.";
