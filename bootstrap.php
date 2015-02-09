@@ -41,7 +41,7 @@ $driverChain = new Doctrine\ORM\Mapping\Driver\DriverChain();
 $driverChain->addDriver($annotationDriver, 'AG');
 
 $config = new Doctrine\ORM\Configuration;
-$config->setProxyDir(__DIR__.'/tmp');
+$config->setProxyDir('/tmp');
 $config->setProxyNamespace('Proxy');
 $config->setAutoGenerateProxyClasses(true); // this can be based on production config.
 // register metadata driver
@@ -113,36 +113,58 @@ $app['tagService'] = function() use ($app, $em) {
     return new TagService($em, $app['tagValidator']);
 };
 // ----------------------------------------------------------------
-
-$app['user_repository'] = $app->share(function($app) use($em){
+$app->register(new SessionServiceProvider());
+$app['user_provider'] = $app->share(function($app) use($em){
     $user = new AG\Entity\User\User;
 
-    $repo = $em->getRepository('AG\Entity\User\User');
+    // find the encoder for a UserInterface instance
+    $encoder = $app['security.encoder_factory']->getEncoder($user);
 
-    $repo->setPasswordEncoder($app['security.encoder_factory']->getEncoder($user));
+    // compute the encoded password for foo
+    //echo $password = $encoder->encodePassword('admin', $user->getSalt());
+    // $app['security.encoder.digest']->encodePassword('password', '');
 
-    return $repo;
+    $userProvider = new \AG\Entity\User\UserProvider($em, $encoder);
+
+    return $userProvider;
 });
-
-$app->register(new SessionServiceProvider());
 
 $app->register(new SecurityServiceProvider(), array(
     'security.firewalls' => array(
-        'admin' => array(
-            'anonymous' => true,
-            'pattern' => '^/',
+        'tags' => array(
+            'pattern' => '^/tags/',
             'http' => true,
             'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
             'users' => $app->share(function() use ($app) {
-                return $app['user_repository'];
+                return $app['user_provider'];
             }),
-            'logout' => array('logout_path' => '/admin/logout')
-        )
-    ),
+        ),
+    )
 ));
 
+//
+//
+//$app->register(new SecurityServiceProvider(), array(
+//    'security.firewalls' => array(
+//        'admin' => array(
+//            'anonymous' => true,
+//            'pattern' => '^/',
+//            'http' => true,
+//            'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
+//            'users' => $app->share(function() use ($app) {
+//                return $app['user_provider'];
+//            }),
+//            'logout' => array('logout_path' => '/admin/logout')
+//        )
+//    ),
+//));
+//
+//$app['security.access_rules'] = array(
+//    array('^/tags/' => 'ROLE_ADMIN')
+//);
+
+
 $app['security.access_rules'] = array(
-    array('^/admin' => 'ROLE_ADMIN')
+    array('^/tags/', 'ROLE_ADMIN')
+    //array('^.*$', 'ROLE_USER'),
 );
-
-

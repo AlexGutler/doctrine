@@ -15,6 +15,7 @@ $conn->query("DROP TABLE IF EXISTS produtos_tags;");
 $conn->query("DROP TABLE IF EXISTS produtos;");
 $conn->query("DROP TABLE IF EXISTS tags;");
 $conn->query("DROP TABLE IF EXISTS categorias;");
+$conn->query("DROP TABLE IF EXISTS users;");
 
 
 $conn->query("CREATE TABLE categorias (id INT AUTO_INCREMENT NOT NULL, nome VARCHAR(255) NOT NULL, PRIMARY KEY(id))
@@ -64,12 +65,17 @@ $conn->query("CREATE TABLE `users` (
 `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(100) NOT NULL DEFAULT '',
   `password` VARCHAR(255) NOT NULL DEFAULT '',
-  `plainPassword` VARCHAR(255) NOT NULL DEFAULT '',
   `roles` VARCHAR(255) NOT NULL DEFAULT '',
   `createdAt` datetime,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+$sql = "INSERT INTO users (id, username, password, roles, createdAt) VALUES
+        (1, 'admin', 'nhDr7OyKlXQju+Ge/WKGrPQ9lPBSUFfpK+B1xqx/+8zLZqRNX0+5G1zBQklXUFy86lCpkAofsExlXiorUcKSNQ==',
+        'ROLE_ADMIN', '2015-02-09 00:00:00');";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
 
 echo "Tabelas criadas com sucesso.\n";
 echo "Dados inseridos com sucesso.\n";

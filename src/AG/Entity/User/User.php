@@ -31,11 +31,6 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $plainPassword;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     protected $roles = array('ROLE_USER');
 
     /**
@@ -77,16 +72,6 @@ class User implements UserInterface
     public function setPassword($password)
     {
         $this->password = $password;
-    }
-
-    public function getPlainPassword()
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword($plainPassword)
-    {
-        $this->plainPassword = $plainPassword;
     }
 
     public function getRoles()
