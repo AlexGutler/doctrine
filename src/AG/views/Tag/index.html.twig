@@ -1,0 +1,63 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}AG || Listagem de Tags{% endblock %}
+
+{% block content %}
+    <header class="container">
+        <h1>Listagem de Tags</h1>
+    </header>
+    <section class="container">
+        <section class="row">
+            <div class="col-md-6">
+                <a href="{{ path('tags-novo') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Tags</a>
+            </div>
+            <section class="col-md-6">
+                <form class="navbar-form navbar-left" role="search" method="post" action="{{ path('tags-find') }}">
+                    <div class="form-group">
+                        <input type="text" name="nome" id="nome" class="form-control" placeholder="Buscar por nome">
+                    </div>
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                </form>
+            </section>
+        </section>
+        <table class="table table-hover">
+            <tbody>
+            <tr>
+                <th>ID</th>
+                <th>NOME</th>
+                <th>AÇÕES</th>
+            </tr>
+            </tbody>
+            <tbody>
+            {% for tag in tags %}
+                <tr>
+                    <td>{{ tag.id }}</td>
+                    <td>{{ tag.nome }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('tags-editar', {id: tag.id}) }}">Editar</a>
+                        <a class="btn btn-danger" href="{{ path('tags-deletar-form', {id: tag.id}) }}">Remover</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Monta a páginação dos resultados -->
+    <section class="container">
+        {% if paginas > 0 %}
+            <ul class="pagination">
+                {% for pagina in 1..paginas %}
+                    <li class="{% if activepage == pagina %}active{% endif %}">
+                        <a href="{{ path('tags-pagination', {id : pagina}) }}"> {{ pagina }} </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+{% endblock %}
+
+{% block classhome %}{% endblock %}
+{% block classprodutos %}{% endblock %}
+{% block classcategorias %}{% endblock %}
+{% block classtags %}active{% endblock %}

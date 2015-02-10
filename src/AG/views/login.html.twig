@@ -1,0 +1,49 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}AG || Autenticação{% endblock %}
+
+{% block content %}
+    <header class="container">
+        <h1>FAÇA O LOGIN ABAIXO</h1>
+    </header>
+
+    <section class="container">
+        <form class="form-horizontal" method="post"
+              action="{{ path('ag_login_check') }}">
+            {% if error %}
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <div class="alert alert-warning">
+                            {{ error }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="username"  name="_username" value="{{ last_username }}" placeholder="Nome de Usuário" required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" id="password" name="_password" value="" placeholder="Sua senha" required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <a href="{{ path('forgot_password') }}" class="col-sm-4">Esqueci minha senha</a>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="col-sm-4 btn btn-success">LOGIN</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+{% block form %}
+
+{% endblock %}
+
+{% block classhome %}{% endblock %}
+{% block classprodutos %}{% endblock %}
+{% block classcategorias %}{% endblock %}
+{% block classtags %}{% endblock %}

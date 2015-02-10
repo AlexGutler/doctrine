@@ -1,0 +1,86 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}AG || Listagem de Produtos{% endblock %}
+
+{% block content %}
+    <header class="container">
+        <h1>Listagem de Produtos</h1>
+    </header>
+    <section class="container">
+        <section class="row">
+            <div class="col-md-6">
+                <a href="{{ path('produto-novo') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Produtos</a>
+            </div>
+            <section class="col-md-6">
+                <form class="navbar-form navbar-left" role="search" method="post" action="{{ path('produto-find') }}">
+                    <div class="form-group">
+                        <input type="text" name="nome" id="nome" class="form-control" placeholder="Buscar Nome ou Descrição">
+                    </div>
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                </form>
+            </section>
+        </section>
+        <table class="table table-hover">
+            <tbody>
+            <tr>
+                <th></th>
+                <th>NOME</th>
+                <th>DESCRIÇÃO</th>
+                <th>VALOR</th>
+                <th>CATEGORIA</th>
+                <th>TAGS</th>
+                <th>AÇÕES</th>
+            </tr>
+            </tbody>
+            <tbody>
+
+            {% for produto in produtos %}
+                <tr>
+                    <td>
+                        {% if produto.path != null %} <img src="/uploads/imagens/{{ produto.path }}" alt="" width="70"/>
+                        {% else %}<img src="/uploads/imagens/no-image.png" alt="" width="70"/>{% endif %}
+                    </td>
+                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.descricao }}</td>
+                    <td>{{ produto.valor }}</td>
+                    <td>{% if produto.categoria.id is defined %} {{ produto.categoria.nome }} {% endif %}</td>
+                    <td>
+                        {% set tagsSelected = [] %}
+                        {% if produto.tags is iterable %}
+                            {% for tagSelected in produto.tags %}
+                                {% set tagsSelected = tagsSelected|merge([tagSelected.id]) %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <ul>
+                        {% for tag in tags %}
+                            {% if tag.id in tagsSelected %}<li>{{ tag.nome }}</li>{% endif %}
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('produto-editar', {id: produto.id}) }}">Editar</a>
+                        <a class="btn btn-danger" href="{{ path('produto-deletar-form', {id: produto.id}) }}">Remover</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Monta a páginação dos resultados -->
+    <section class="container">
+        {% if paginas > 0 %}
+            <ul class="pagination">
+            {% for pagina in 1..paginas %}
+                <li class="{% if activepage == pagina %}active{% endif %}">
+                    <a href="{{ path('produtos-pagination', {id : pagina}) }}"> {{ pagina }} </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+{% endblock %}
+
+{% block classhome %}{% endblock %}
+{% block classprodutos %}active{% endblock %}
