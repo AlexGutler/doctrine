@@ -8,11 +8,13 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+
 use AG\Entity\User\User;
 
 class UserProvider implements UserProviderInterface
 {
     private $passwordEncoder;
+
     /**
      * @var EntityManager
      */
@@ -32,6 +34,7 @@ class UserProvider implements UserProviderInterface
             throw new UsernameNotFoundException(sprintf('Usuário "%s" não encontrado!', $username));
         }
         $user->setRoles(explode(",", $user->getRoles()));
+        //$user->setRoles($user->getRoles());
         return $user;
 
 //        $user = $this->em->findByUsername($username);
@@ -40,6 +43,7 @@ class UserProvider implements UserProviderInterface
 //            throw new UsernameNotFoundException(sprintf('Usuário "%s" não encontrado!', $username));
 //        }
 //        return $this->arrayToObject($user);
+
     }
 
     public function refreshUser(UserInterface $user)
@@ -54,6 +58,7 @@ class UserProvider implements UserProviderInterface
 //        {
 //            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported', get_class($user)));
 //        }
+
     }
 
     public function supportsClass($class)
@@ -63,38 +68,26 @@ class UserProvider implements UserProviderInterface
 
     public function arrayToObject($userArr, $user = null)
     {
-        if(!$user)
-        {
+        if(!$user) {
             $user = new User();
-
             $user->setId(isset($userArr['id']) ? $user['id'] : null);
         }
-
         $username = isset($userArr['username']) ? $user['username'] : null;
         $password = isset($userArr['password']) ? $user['password'] : null;
         $roles = isset($userArr['roles']) ? explode(',', $userArr['roles']) : array("ROLE_USER");
         $createAt = isset($userArr['created_at']) ? $userArr['created_at'] : null;
-
-        if($username)
-        {
+        if($username) {
             $user->setUsername($username);
         }
-
-        if($password)
-        {
+        if($password) {
             $user->setPassword($password);
         }
-
-        if($roles)
-        {
+        if($roles) {
             $user->setRoles($roles);
         }
-
-        if($createAt)
-        {
+        if($createAt) {
             $user->setCreatedAt($createAt);
         }
-
         return $user;
     }
 }

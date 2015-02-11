@@ -3,5 +3,4 @@ vendor/
 composer.lock
 composer.phar
 silex-master.zip
-public/img/404-.jpg
 bin

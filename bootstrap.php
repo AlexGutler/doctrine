@@ -12,6 +12,7 @@ use AG\Utils\Validator\Tag\TagValidator,
 
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
+use AG\Entity\User\UserProvider;
 
 /* DOCTRINE */
 use Doctrine\ORM\Tools\Setup,
@@ -121,10 +122,14 @@ $app['user_provider'] = $app->share(function($app) use($em){
     $encoder = $app['security.encoder_factory']->getEncoder($user);
 
     // compute the encoded password for foo
+
     //echo $password = $encoder->encodePassword('00fb00', $user->getSalt());
+
+    //echo $password = $encoder->encodePassword('admin', $user->getSalt());
+
     // $app['security.encoder.digest']->encodePassword('password', '');
 
-    $userProvider = new \AG\Entity\User\UserProvider($em, $encoder);
+    $userProvider = new UserProvider($em, $encoder);
 
     return $userProvider;
 });
@@ -163,6 +168,20 @@ $app->register(new SecurityServiceProvider(), array(
     )
 ));
 
+//$app->register(new SecurityServiceProvider(), array(
+//    'security.firewalls' => array(
+//        'tags' => array(
+//            'pattern' => '^/tags/',
+//            'http' => true,
+//            'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
+//
+//            'users' => $app->share(function() use ($app) {
+//                return $app['user_provider'];
+//            }),
+//        ),
+//    )
+//));
+
 
 /* BLOQUEIA TUDO  */
 //$app->register(new SecurityServiceProvider(), array(
@@ -190,7 +209,6 @@ $app->register(new SecurityServiceProvider(), array(
 //    'pattern' => '^.*$',
 
 //
-//
 //$app->register(new SecurityServiceProvider(), array(
 //    'security.firewalls' => array(
 //        'admin' => array(
@@ -210,6 +228,7 @@ $app->register(new SecurityServiceProvider(), array(
 //    array('^/tags/' => 'ROLE_ADMIN')
 //);
 
+
 //$app['security.access_rules'] = array(
 //    array('^/tags/', 'ROLE_ADMIN'),
 //    array('^/produtos/', 'ROLE_ADMIN'),
@@ -223,3 +242,18 @@ $app['security.access_rules'] = array(
 //    array('^/categorias/', 'ROLE_ADMIN'),
     array('^.*$', 'ROLE_ADMIN'),
 );
+
+//$app['security.access_rules'] = array(
+//    array('^/tags/', 'ROLE_ADMIN')
+//    //array('^.*$', 'ROLE_USER'),
+//);
+
+$app['current_username'] = function() use($app) {
+    $token = $app['security']->getToken();
+    if (null !== $token) {
+        $username = $token->getUser()->getUserName();
+    } else {
+        $username = null;
+    }
+    return $username;
+};

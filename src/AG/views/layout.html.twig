@@ -38,6 +38,8 @@
                     <li class="{% block classprodutos %}{% endblock %}"><a href="{{ path('produtos') }}">Produtos</a></li>
                     <li class="{% block classcategorias %}{% endblock %}"><a href="{{ path('categorias') }}">Categorias</a></li>
                     <li class="{% block classtags %}{% endblock %}"><a href="{{ path('tags') }}">Tags</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
                     {% if app.security.token is not null and is_granted('ROLE_ADMIN') %} {# (IS_AUTHENTICATED_FULLY) #}
                         <li class="logout"><a href="{{ path('ag_logout') }}">Logout</a></li>
                     {% else %}
