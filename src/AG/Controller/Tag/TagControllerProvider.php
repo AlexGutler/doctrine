@@ -61,7 +61,7 @@ class TagControllerProvider implements ControllerProviderInterface
             $result = $app['tagService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->redirect('/tags');
+                return $app->redirect('/ag/tags');
             } else {
                 return $app['twig']->render(
                     'Tag/novo.html.twig',
@@ -88,7 +88,7 @@ class TagControllerProvider implements ControllerProviderInterface
             $result = $app['tagService']->delete($id);
             if ($result)
             {
-                return $app->redirect('/tags');
+                return $app->redirect('/ag/tags');
             } else {
                 $app->abort(500, "Erro ao deletar a tag");
             }
@@ -110,7 +110,7 @@ class TagControllerProvider implements ControllerProviderInterface
             $result = $app['tagService']->update($request, $id);
 
             if (!is_array($result)) {
-                return $app->redirect('/tags');
+                return $app->redirect('/ag/tags');
             } else {
                 return $app['twig']->render('Tag/editar.html.twig',
                     [

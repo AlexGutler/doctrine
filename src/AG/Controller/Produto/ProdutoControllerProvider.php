@@ -78,7 +78,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->redirect('/produtos');
+                return $app->redirect('/ag/produtos');
             } else {
                 $categorias = $app['categoriaService']->fetchAll();
                 $tags = $app['tagService']->fetchAll();
@@ -114,7 +114,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->delete($id);
             if ($result)
             {
-                return $app->redirect('/produtos');
+                return $app->redirect('/ag/produtos');
             } else {
                 $app->abort(500, "Erro ao deletar o produto");
             }
@@ -141,7 +141,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             $result = $app['produtoService']->update($request, $id);
 
             if (!is_array($result)) {
-                return $app->redirect('/produtos');
+                return $app->redirect('/ag/produtos');
             } else {
                 $produto = $app['produtoService']->fetch($id);
                 $categorias = $app['categoriaService']->fetchAll();

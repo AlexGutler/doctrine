@@ -62,7 +62,7 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             $result = $app['categoriaService']->insert($request);
 
             if (!is_array($result)) {
-                return $app->redirect('/categorias');
+                return $app->redirect('/ag/categorias');
             } else {
                 return $app['twig']->render(
                     'Categoria/novo.html.twig',
@@ -89,7 +89,7 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             $result = $app['categoriaService']->delete($id);
             if ($result)
             {
-                return $app->redirect('/categorias');
+                return $app->redirect('/ag/categorias');
             } else {
                 $app->abort(500, "Erro ao deletar a categoria");
             }
@@ -111,7 +111,7 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             $result = $app['categoriaService']->update($request, $id);
 
             if (!is_array($result)) {
-                return $app->redirect('/categorias');
+                return $app->redirect('/ag/categorias');
             } else {
                 return $app['twig']->render('Categoria/editar.html.twig',
                     [
