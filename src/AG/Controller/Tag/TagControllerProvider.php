@@ -13,11 +13,9 @@ class TagControllerProvider implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-
         $controllers->get('/', function (Application $app) {
             return $app->redirect('pag/1');
         })->bind('tags');
-
 
         $controllers->get('/pag/{id}', function (Application $app, $id) {
             if(!isset($id)){$id = 1;}
@@ -36,7 +34,6 @@ class TagControllerProvider implements ControllerProviderInterface
             );
         })->bind('tags-pagination');
 
-
         $controllers->post("/find", function(Request $request) use($app){
             $options = array(
                 'coluna' => 'nome',
@@ -51,11 +48,9 @@ class TagControllerProvider implements ControllerProviderInterface
             );
         })->bind('tags-find');
 
-
         $controllers->get("/novo", function() use($app){
             return $app['twig']->render('Tag/novo.html.twig', ['errors' => array('nome' => null),]);
         })->bind('tags-novo');
-
 
         $controllers->post("/novo", function(Request $request) use($app) {
             $result = $app['tagService']->insert($request);
@@ -72,7 +67,6 @@ class TagControllerProvider implements ControllerProviderInterface
             }
         })->bind('tags-salvar');
 
-
         $controllers->get('/{id}/deletar', function($id) use($app){
             $tag = $app['tagService']->fetch($id);
 
@@ -82,7 +76,6 @@ class TagControllerProvider implements ControllerProviderInterface
                     'errors' => array('nome' => null),
                 ]);
         })->bind('tags-deletar-form');
-
 
         $controllers->post('/{id}/deletar', function($id) use($app){
             $result = $app['tagService']->delete($id);
@@ -94,7 +87,6 @@ class TagControllerProvider implements ControllerProviderInterface
             }
         })->bind('tags-deletar');
 
-
         $controllers->get("/{id}/editar", function($id) use($app){
             $tag = $app['tagService']->fetch($id);
 
@@ -104,7 +96,6 @@ class TagControllerProvider implements ControllerProviderInterface
                     'errors' => array('nome' => null),
                 ]);
         })->bind('tags-editar');
-
 
         $controllers->post("/{id}/editar", function(Request $request, $id) use($app) {
             $result = $app['tagService']->update($request, $id);
@@ -120,7 +111,6 @@ class TagControllerProvider implements ControllerProviderInterface
                     ]);
             }
         })->bind('tags-atualizar');
-
 
         return $controllers;
     }

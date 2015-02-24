@@ -4,3 +4,4 @@ composer.lock
 composer.phar
 silex-master.zip
 bin
+/nbproject/private/

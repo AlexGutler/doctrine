@@ -82,3 +82,14 @@ $stmt->execute();
 
 echo "Tabelas criadas com sucesso.\n";
 echo "Dados inseridos com sucesso.\n";
+
+
+//CREATE TABLE usuarios (id INT AUTO_INCREMENT NOT NULL, username VARCHAR(100) NOT
+// NULL, email VARCHAR(100) NOT NULL, password VARCHAR(255) NOT NULL, roles VARCHA
+//R(100) NOT NULL, created_at DATETIME NOT NULL, salt VARCHAR(255) NOT NULL, PRIMA
+//RY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+//DROP INDEX unique_username ON users;
+//ALTER TABLE users CHANGE id id INT AUTO_INCREMENT NOT NULL, CHANGE username user
+//name VARCHAR(100) NOT NULL, CHANGE password password VARCHAR(255) NOT NULL, CHAN
+//GE roles roles VARCHAR(255) NOT NULL, CHANGE createdAt createdAt DATETIME NOT NU
+//LL;
