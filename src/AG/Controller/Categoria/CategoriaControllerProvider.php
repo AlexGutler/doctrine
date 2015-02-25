@@ -9,15 +9,19 @@ use Symfony\Component\HttpFoundation\Response,
 
 class CategoriaControllerProvider implements ControllerProviderInterface
 {
+    protected $before;
+
+    public function __construct($before){
+        $this->before = $before;
+    }
+
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
 
-
         $controllers->get('/', function (Application $app) {
             return $app->redirect('pag/1');
-        })->bind('categorias');
-
+        })->bind('categorias')->before($this->before);
 
         $controllers->get('/pag/{id}', function (Application $app, $id) {
             if(!isset($id)){$id = 1;}
@@ -37,7 +41,6 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             );
         })->bind('categorias-pagination');
 
-
         $controllers->post("/find", function(Request $request) use($app){
             $options = array(
                 'coluna' => 'nome',
@@ -52,11 +55,9 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             );
         })->bind('categorias-find');
 
-
         $controllers->get("/novo", function() use($app){
             return $app['twig']->render('Categoria/novo.html.twig', ['errors' => array('nome' => null),]);
         })->bind('categoria-novo');
-
 
         $controllers->post("/novo", function(Request $request) use($app) {
             $result = $app['categoriaService']->insert($request);
@@ -73,7 +74,6 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             }
         })->bind('categoria-salvar');
 
-
         $controllers->get('/{id}/deletar', function($id) use($app){
             $categoria = $app['categoriaService']->fetch($id);
 
@@ -83,7 +83,6 @@ class CategoriaControllerProvider implements ControllerProviderInterface
                     'errors' => array('nome' => null),
                 ]);
         })->bind('categoria-deletar-form');
-
 
         $controllers->post('/{id}/deletar', function($id) use($app){
             $result = $app['categoriaService']->delete($id);
@@ -95,7 +94,6 @@ class CategoriaControllerProvider implements ControllerProviderInterface
             }
         })->bind('categoria-deletar');
 
-
         $controllers->get("/{id}/editar", function($id) use($app){
             $categoria = $app['categoriaService']->fetch($id);
 
@@ -105,7 +103,6 @@ class CategoriaControllerProvider implements ControllerProviderInterface
                     'errors' => array('nome' => null),
                 ]);
         })->bind('categoria-editar');
-
 
         $controllers->post("/{id}/editar", function(Request $request, $id) use($app) {
             $result = $app['categoriaService']->update($request, $id);
@@ -121,7 +118,6 @@ class CategoriaControllerProvider implements ControllerProviderInterface
                     ]);
             }
         })->bind('categoria-atualizar');
-
 
         return $controllers;
     }

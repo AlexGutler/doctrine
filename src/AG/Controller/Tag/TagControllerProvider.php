@@ -9,13 +9,19 @@ use Symfony\Component\HttpFoundation\Response,
 
 class TagControllerProvider implements ControllerProviderInterface
 {
+    protected $before;
+
+    public function __construct($before){
+        $this->before = $before;
+    }
+
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
 
         $controllers->get('/', function (Application $app) {
             return $app->redirect('pag/1');
-        })->bind('tags');
+        })->bind('tags')->before($this->before);
 
         $controllers->get('/pag/{id}', function (Application $app, $id) {
             if(!isset($id)){$id = 1;}

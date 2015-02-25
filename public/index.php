@@ -34,7 +34,7 @@ $app->get("/resetting/request", function() use($app){
 
 // cria as rotas
 $routes = new Routes();
-$routes->begin($app);
+$routes->begin($app, $before);
 
 // captura de erro e 404
 $app->error(function (\Exception $e, $code) use ($app) {

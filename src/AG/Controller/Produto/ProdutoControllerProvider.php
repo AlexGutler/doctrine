@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Response,
 
 class ProdutoControllerProvider implements ControllerProviderInterface
 {
+    protected $before;
+    public function __construct($before){
+        $this->before = $before;
+    }
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
@@ -18,7 +22,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             // direcinar para pagina 1
             return $app->redirect('pag/1');
 
-        })->bind('produtos');
+        })->bind('produtos')->before($this->before);
 
         // PAGINATION DOS PRODUTOS
         $controllers->get('/pag/{id}', function (Application $app, $id) {
