@@ -83,14 +83,16 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 $categorias = $app['categoriaService']->fetchAll();
                 $tags = $app['tagService']->fetchAll();
 
-                return $app['twig']->render('Produto/novo.html.twig',
+                return $app['twig']->render(
+                    'Produto/novo.html.twig',
                     [
                         'id' => null,
                         'errors' => $result,
                         'produto' => $request->request->all(),
                         'categorias' => $categorias,
                         'tags' => $tags
-                    ]);
+                    ]
+                );
             }
         })->bind('produto-salvar');
 

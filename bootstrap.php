@@ -9,7 +9,9 @@ use AG\Service\Categoria\CategoriaService,
     AG\Utils\Validator\Categoria\CategoriaValidator;
 use AG\Utils\Validator\Tag\TagValidator,
     AG\Service\Tag\TagService;
-
+use AG\Utils\Validator\Usuario\UsuarioValidator,
+    AG\Service\Usuario\UsuarioService,
+    AG\Entity\Usuario\Usuario;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use AG\Entity\User\UserProvider;
@@ -89,9 +91,17 @@ $app['conn'] = function() use ($config){
 $app['produto'] = function(){
     return new Produto();
 };
+// armazenando a entidade usuario
+$app['usuario'] = function(){
+    return new Usuario();
+};
 // armazenando a dependencia ao ProdutoValidator
 $app['produtoValidator'] = function(){
     return new ProdutoValidator();
+};
+// armazenando a dependencia ao UsuarioValidator
+$app['usuarioValidator'] = function(){
+    return new UsuarioValidator();
 };
 // armazenar o validator da categoria
 $app['categoriaValidator'] = function(){
@@ -113,147 +123,9 @@ $app['categoriaService'] = function() use ($app, $em) {
 $app['tagService'] = function() use ($app, $em) {
     return new TagService($em, $app['tagValidator']);
 };
+// armazenar o service do usuario
+$app['usuarioService'] = function() use ($app, $em) {
+    return new UsuarioService($app['usuario'], $em, $app['usuarioValidator']);
+};
 // ----------------------------------------------------------------
 $app->register(new SessionServiceProvider());
-$app['user_provider'] = $app->share(function($app) use($em){
-    $user = new AG\Entity\User\User;
-
-    // find the encoder for a UserInterface instance
-    $encoder = $app['security.encoder_factory']->getEncoder($user);
-
-    // compute the encoded password for foo
-
-    //echo $password = $encoder->encodePassword('00fb00', $user->getSalt());
-
-    //echo $password = $encoder->encodePassword('admin', $user->getSalt());
-
-    // $app['security.encoder.digest']->encodePassword('password', '');
-
-    $userProvider = new UserProvider($em, $encoder);
-
-    return $userProvider;
-});
-
-
-/* MINE */
-//$app->register(new SecurityServiceProvider(), array(
-//    'security.firewalls' => array(
-//        'tags' => array(
-//            'pattern' => '^/tags/',
-//            'http' => true,
-//            'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
-//            'users' => $app->share(function() use ($app) {
-//                return $app['user_provider'];
-//            }),
-//        ),
-//    )
-//));
-
-
-/* THEIRS */
-$app->register(new SecurityServiceProvider(), array(
-    'security.firewalls' => array(
-        'admin' => array(
-            'pattern' => '^/ag/',
-            //'http' => true,
-            'form' => array(
-                'login_path' => '/login',
-                'check_path' => '/ag/login_check'
-            ),
-            'logout' => array('logout_path' => '/ag/logout'),
-            'users' => $app->share(function() use ($app) {
-                return $app['user_provider'];
-            }),
-        ),
-    )
-));
-
-//$app->register(new SecurityServiceProvider(), array(
-//    'security.firewalls' => array(
-//        'tags' => array(
-//            'pattern' => '^/tags/',
-//            'http' => true,
-//            'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
-//
-//            'users' => $app->share(function() use ($app) {
-//                return $app['user_provider'];
-//            }),
-//        ),
-//    )
-//));
-
-
-/* BLOQUEIA TUDO  */
-//$app->register(new SecurityServiceProvider(), array(
-//    'security.firewalls' => array(
-//        'login' => array(
-//            'pattern' => '^/login$',
-//        ),
-//        'secured' => array(
-//            'pattern' => '^.*$',
-//            'form' => array(
-//                'login_path' => '/login',
-//                'check_path' => '/login_check'
-//            ),
-//            'logout' => array('logout_path' => '/logout'),
-//            'users' => $app->share(function() use ($app) {
-//                return $app['user_provider'];
-//            }),
-//        ),
-//    )
-//));
-
-
-
-//'secured' => array(
-//    'pattern' => '^.*$',
-
-//
-//$app->register(new SecurityServiceProvider(), array(
-//    'security.firewalls' => array(
-//        'admin' => array(
-//            'anonymous' => true,
-//            'pattern' => '^/',
-//            'http' => true,
-//            'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
-//            'users' => $app->share(function() use ($app) {
-//                return $app['user_provider'];
-//            }),
-//            'logout' => array('logout_path' => '/admin/logout')
-//        )
-//    ),
-//));
-//
-//$app['security.access_rules'] = array(
-//    array('^/tags/' => 'ROLE_ADMIN')
-//);
-
-
-//$app['security.access_rules'] = array(
-//    array('^/tags/', 'ROLE_ADMIN'),
-//    array('^/produtos/', 'ROLE_ADMIN'),
-//    array('^/categorias/', 'ROLE_ADMIN'),
-//    //array('^.*$', 'ROLE_USER'),
-//);
-
-$app['security.access_rules'] = array(
-//    array('^/tags/', 'ROLE_ADMIN'),
-//    array('^/produtos/', 'ROLE_ADMIN'),
-//    array('^/categorias/', 'ROLE_ADMIN'),
-    array('^.*$', 'ROLE_ADMIN'),
-);
-
-//$app['security.access_rules'] = array(
-//    array('^/tags/', 'ROLE_ADMIN')
-//    //array('^.*$', 'ROLE_USER'),
-//);
-
-$app['current_username'] = function() use($app) {
-    $token = $app['security']->getToken();
-    if (null !== $token) {
-        $username = $token->getUser()->getUserName();
-    } else {
-        $username = null;
-    }
-    return $username;
-};

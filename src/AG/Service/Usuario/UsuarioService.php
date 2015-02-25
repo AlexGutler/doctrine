@@ -2,7 +2,7 @@
 namespace AG\Service\Usuario;
 
 use AG\Entity\Usuario\Usuario,
-    AG\Utils\Validator\usuario\usuarioValidator;
+    AG\Utils\Validator\Usuario\UsuarioValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -12,25 +12,21 @@ class UsuarioService
     private $em;
     private $usuario;
 
-    public function __construct(Usuario $usuario, EntityManager $em, usuarioValidator $usuarioValidator)
+    public function __construct(Usuario $usuario, EntityManager $em, UsuarioValidator $usuarioValidator)
     {
         $this->usuario = $usuario;
         $this->em = $em;
         $this->usuarioValidator = $usuarioValidator;
     }
-    // password_verify($senha, $user['senha'])
+
     public function insert(Request $request)
     {
         $this->usuario->setUsername($request->get('username'))
                       ->setEmail($request->get('email'))
-                      ->setPassword($request->get('password'));
-
-        //$this->usuario->setFile($request->files->get('path'));
-
+                      ->setPassword($request->get('password'))
+                      ->setRoles($request->get('role'));
         $isValid = $this->usuarioValidator->validate($this->usuario);
-
-        if(true !== $isValid)
-        {
+        if(true !== $isValid) {
             return $isValid;
         }
 
@@ -46,25 +42,35 @@ class UsuarioService
 
         $this->usuario->setUsername($request->get('username'))
             ->setEmail($request->get('email'))
-            ->setPassword($request->get('password'));
-
-//        if($request->files->get('path')){
-//            self::removeImage($this->usuario);
-//            $this->usuario->setFile($request->files->get('path'));
-//        }
-
+            ->setPassword($request->get('password'))
+            ->setRoles($request->get('role'));
+        
         $isValid = $this->usuarioValidator->validate($this->usuario);
-
-        if(true !== $isValid)
-        {
+        if(true !== $isValid) {
             return $isValid;
         }
 
-        // aplica no banco
         $this->em->persist($this->usuario);
         $this->em->flush();
 
         return $this->usuario;
+    }
+
+    public function login(Request $request)
+    {
+        $username = $request->get('username');
+        $password = $request->get('password');
+        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
+
+        $this->usuario = $repository->findOneByUsername($username);
+
+        if ($this->usuario){
+            if (password_verify($password, $this->usuario->getPassword())) {
+                return $this->getData($this->usuario);
+            }
+        } else {
+            return false;
+        }
     }
 
     public function delete($id)
@@ -83,33 +89,20 @@ class UsuarioService
 
         $this->usuario = $repository->find($id);
 
-        //return $this->getData($this->usuario);
+        return $this->getData($this->usuario);
     }
 
     private function getData(Usuario $usuario)
     {
-//        $arrayusuario['id'] = $usuario->getId();
-//        $arrayusuario['nome'] = $usuario->getNome();
-//        $arrayusuario['descricao'] = $usuario->getDescricao();
-//        $arrayusuario['valor'] = $usuario->getValor();
-//        if($usuario->getCategoria()){
-//            $arrayusuario['categoria']['id'] = $usuario->getCategoria()->getId();
-//            $arrayusuario['categoria']['nome'] = $usuario->getCategoria()->getNome();
-//        } else {
-//            $arrayusuario['categoria']['id'] = null;
-//            $arrayusuario['categoria']['nome'] = null;
-//        }
-//        if(count($usuario->getTags()) > 0){
-//            foreach($usuario->getTags() as $key => $tag){
-//                $arrayusuario['tags'][$key]['id'] = $tag->getId();
-//                $arrayusuario['tags'][$key]['nome'] = $tag->getNome();
-//            }
-//        } else {
-//            $arrayusuario['tags'] = null;
-//        }
-//        $arrayusuario['path'] = $usuario->getPath();
-//
-//        return $arrayusuario;
+        $arrayUsuario = array();
+
+        $arrayUsuario['id'] = $usuario->getId();
+        $arrayUsuario['username'] = $usuario->getUsername();
+        $arrayUsuario['password'] = $usuario->getPassword();
+        $arrayUsuario['email'] = $usuario->getEmail();
+        $arrayUsuario['roles'] = $usuario->getRoles();
+
+        return $arrayUsuario;
     }
 
     public function fetchAll()
@@ -121,44 +114,27 @@ class UsuarioService
 
     public function toArray(array $usuarios)
     {
-//        $arrayusuarios = array();
-//        foreach($usuarios as $key => $usuario)
-//        {
-//            $arrayusuarios[$key]['id'] = $usuario->getId();
-//            $arrayusuarios[$key]['nome'] = $usuario->getNome();
-//            $arrayusuarios[$key]['descricao'] = $usuario->getDescricao();
-//            $arrayusuarios[$key]['valor'] = $usuario->getValor();
-//            if($usuario->getCategoria()){
-//                $arrayusuarios[$key]['categoria']['id'] = $usuario->getCategoria()->getId();
-//                $arrayusuarios[$key]['categoria']['nome'] = $usuario->getCategoria()->getNome();
-//            } else {
-//                $arrayusuarios[$key]['categoria'] = null;
-//            }
-//
-//            if(count($usuario->getTags()) > 0)
-//            {
-//                foreach($usuario->getTags() as $k => $tag){
-//                    $arrayusuarios[$key]['tags'][$k]['id'] = $tag->getId();
-//                    $arrayusuarios[$key]['tags'][$k]['nome'] = $tag->getNome();
-//                }
-//            } else {
-//                $arrayusuarios[$key]['tags'] = null;
-//            }
-//            $arrayusuarios['path'] = $usuario->getPath();
-//        }
-//
-//        return $arrayusuarios;
+        $arrayUsuarios = array();
+        foreach($usuarios as $key => $usuario)
+        {
+            $arrayUsuarios[$key]['id'] = $usuario->getId();
+            $arrayUsuarios[$key]['username'] = $usuario->getUsername();
+            $arrayUsuarios[$key]['password'] = $usuario->getPassword();
+            $arrayUsuarios[$key]['email'] = $usuario->getEmail();
+            $arrayUsuarios[$key]['roles'] = $usuario->getRoles();
+        }
+        return $arrayUsuarios;
     }
 
-    public function buscarUsuario($nome)
-    {
-        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
-        return $repository->getBuscarUsuarios($nome);
-    }
-
-    public function fetchPagination($offset, $limit)
-    {
-        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
-        return $repository->fetchPagination($offset, $limit);
-    }
+//    public function buscarUsuario($nome)
+//    {
+//        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
+//        return $repository->getBuscarUsuarios($nome);
+//    }
+//
+//    public function fetchPagination($offset, $limit)
+//    {
+//        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
+//        return $repository->fetchPagination($offset, $limit);
+//    }
 }

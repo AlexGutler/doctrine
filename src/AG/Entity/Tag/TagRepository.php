@@ -13,8 +13,7 @@ class TagRepository extends EntityRepository
         return $this
             ->getEntityManager()
             ->createQuery($dql)
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function fetchPagination($offset, $limit)

@@ -8,54 +8,43 @@ class UsuarioValidator extends Validator
 {
     private $usuario;
     private $erros = array();
+    private $roles = array('ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPERADMIN');
 
     public function validate(Usuario $usuario)
     {
-//        $this->usuario = $usuario;
-//        $this->erros = array('nome' => null, 'descricao' => null, 'valor' => null, 'file' => null);
-//
-//        if($this->isEmpty($this->produto->getNome()))
-//        {
-//            $this->erros['nome'] = "{{ Nome }} Não pode estar vazio.";
-//        } elseif ($this->minStrLength($this->produto->getNome(), 3)) {
-//            $this->erros['nome'] = "{{ Nome }} Não pode conter menos que 3 caracteres.";
-//        } elseif ($this->maxStrLength($this->produto->getNome(), 255)) {
-//            $this->erros['nome'] = "{{ Nome }} Não pode conter mais que 255 caracteres.";
-//        }
-//
-//        if($this->isEmpty($this->produto->getDescricao()))
-//        {
-//            $this->erros['descricao'] = "{{ Descrição }} Não pode estar vazio.";
-//        } elseif ($this->minStrLength($this->produto->getDescricao(), 20)) {
-//            $this->erros['descricao'] = "{{ Descrição }} Não pode conter menos que 20 caracteres.";
-//        }
-//
-//        if($this->isEmpty($this->produto->getValor()))
-//        {
-//            $this->erros['valor'] = "{{ Valor }} Não pode estar vazio.";
-//        } elseif (!$this->isNumeric($this->produto->getValor())) {
-//            $this->erros['valor'] = "{{ Valor }} Deve ser numérico.";
-//        } elseif (!$this->isNaturalNumber($this->produto->getValor())) {
-//            $this->erros['valor'] = "{{ Valor }} Não pode ser negativo.";
-//        } elseif ($this->isZero($this->produto->getValor())){
-//            $this->erros['valor'] = "{{ Valor }} Não pode ser zero.";
-//        }
-//
-//        if($produto->getFile() <> null){
-//            if(!in_array($produto->getFile()->getClientOriginalExtension(), self::getUploadAcceptedTypes()))
-//            {
-//                $this->erros['file'] = "{{ Imagem }} Não é um formato permitido.";
-//            }
-//        }
-//
-//        // verifica se algum erro foi encontrado
-//        foreach($this->erros as $erro)
-//        {
-//            if ($erro <> null)
-//            {
-//                return $this->erros;
-//            }
-//        }
+        $this->usuario = $usuario;
+        $this->erros = array('username' => null, 'password' => null, 'email' => null, 'role' => null);
+
+        if($this->isEmpty($this->usuario->getUsername())) {
+            $this->erros['username'] = "{{ Username }} Não pode estar vazio.";
+        } elseif ($this->minStrLength($this->usuario->getUsername(), 3)) {
+            $this->erros['username'] = "{{ Username }} Não pode conter menos que 3 caracteres.";
+        } elseif ($this->maxStrLength($this->usuario->getUsername(), 255)) {
+            $this->erros['username'] = "{{ Username }} Não pode conter mais que 255 caracteres.";
+        }
+
+        if($this->isEmpty($this->usuario->getPassword())) {
+            $this->erros['password'] = "{{ Password }} Não pode estar vazio.";
+        } elseif ($this->minStrLength($this->usuario->getPassword(), 6)) {
+            $this->erros['password'] = "{{ Password }} Não pode conter menos que 6 caracteres.";
+        } elseif ($this->maxStrLength($this->usuario->getPassword(), 255)) {
+            $this->erros['password'] = "{{ Password }} Não pode conter mais que 255 caracteres.";
+        }
+
+        if(!$this->isMail($this->usuario->getEmail())) {
+            $this->erros['email'] = "{{ Email }} Campo inválido.";
+        }
+
+        if(!in_array($usuario->getRoles(), $this->roles)){
+            $this->erros['role'] = "{{ Role }} Nível de acesso inválido.";
+        }
+
+        // verifica se algum erro foi encontrado
+        foreach($this->erros as $erro) {
+            if ($erro <> null) {
+                return $this->erros;
+            }
+        }
 
         return true;
     }
