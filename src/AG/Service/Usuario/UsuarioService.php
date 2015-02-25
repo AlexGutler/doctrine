@@ -62,9 +62,11 @@ class UsuarioService
         $password = $request->get('password');
         $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
 
+        // busco pelo username
         $this->usuario = $repository->findOneByUsername($username);
 
         if ($this->usuario){
+            // verifico se a senha do Request é igual do usuario
             if (password_verify($password, $this->usuario->getPassword())) {
                 return $this->getData($this->usuario);
             }
