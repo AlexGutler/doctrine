@@ -4,6 +4,7 @@ namespace AG\Service\Usuario;
 use AG\Entity\Usuario\Usuario,
     AG\Utils\Validator\Usuario\UsuarioValidator;
 use Doctrine\ORM\EntityManager;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 class UsuarioService
@@ -75,7 +76,7 @@ class UsuarioService
         }
     }
 
-    public function forgot(Request $request)
+    public function forgot(Request $request, Application $app)
     {
         $email = $request->get('email');
         $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
@@ -84,33 +85,35 @@ class UsuarioService
 
         if($this->usuario){
             //1 – Definimos Para quem vai ser enviado o email
-            $para = $email;
-            $nome = $this->usuario->getUsername();
-            $assunto = 'Recuperação de Senha AG';
+            $username = $this->usuario->getUsername();
+            $assunto = 'Redefinir Senha AG';
 
-            $mensagem = 'Link com o salt apontando para uma rota que fará a redefinição do email ao clicar';
+            $path = $app['asset.host'].'ag/user/reset_password/'.$this->usuario->getSalt();
+
+            $mensagem = 'Você pode redefinir sua senha de acesso AG clicando no link abaixo:<br><br>';
+            $mensagem .= '<a href="'.$path.'" target="_blank">'.$path.'</a><br><br>';
+            $mensagem .= 'Se você não solicitou essa redefinição de senha, você pode ignora-la.<br><br>';
+            $mensagem .= 'Atenciosamente,<br>AG Team.';
 
             //2 - resgatar o nome digitado no formulário e  grava na variavel $nome
             // 3 - resgatar o assunto digitado no formulário e  grava na variavel //$assunto
             //4 – Agora definimos a  mensagem que vai ser enviado no e-mail
-            $msg_email = "<strong>Nome:  </strong>".$nome;
-            $msg_email .= "<br/><strong>Email:  </strong>".$email;
-            $msg_email .= "<br/><strong>Assunto:  </strong>".$assunto;
-            $msg_email .= "<br/><strong>Mensagem: </strong>".$mensagem;
+            $msg_email = "<strong>".$username.",</strong>";
+            $msg_email .= "<br/>".$mensagem;
 
             //5 – agora inserimos as codificações corretas e  tudo mais.
             $headers =  "Content-Type:text/html; charset=UTF-8\n";
-            $headers .= "From: ".$nome." <$email> Reply-to: $para \n"; //Vai ser //mostrado que  o email partiu deste email e seguido do nome
+            $headers .= "From: ".$username." <$email> Reply-to: $email \n"; //Vai ser //mostrado que  o email partiu deste email e seguido do nome
             /* $headers .= "X-Sender:  <sistema@dominio.com.br>\n"; //email do servidor //que enviou
              $headers .= "X-Mailer: PHP  v".phpversion()."\n";
              $headers .= "X-IP:  ".$_SERVER['REMOTE_ADDR']."\n";
              $headers .= "Return-Path:  <sistema@dominio.com.br>\n"; //caso a msg //seja respondida vai para  este email. */
             $headers .= "MIME-Version: 1.0\n";
 
-            $envio = mail($para, $assunto, $msg_email, $headers);  //função que faz o envio do emai
+            $envio = mail($email, $assunto, $msg_email, $headers);  //função que faz o envio do emai
             if ($envio){
                 return [
-                    'warning' => 'Lhe enviamos com as instruções para redefinir sua senha.',
+                    'warning' => 'Lhe enviamos um email com as instruções para redefinir sua senha.',
                     'error' => null
                 ];
             } else {
@@ -123,6 +126,30 @@ class UsuarioService
             return [
                 'error' => 'O email informado não foi encontrado. Certifique-se de ter digitado corretamente seu email.',
                 'warning' => null
+            ];
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $salt = $request->get('salt');
+        $password = $request->get('password');
+        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
+        $this->usuario = $repository->findOneBySalt($salt);
+        if($this->usuario){
+            $this->usuario->setPassword($password);
+            $this->em->persist($this->usuario);
+            $this->em->flush();
+            return [
+                'error' => null,
+                'warning' => 'Sua senha foi redefinida com sucesso! ',
+                'salt' => null
+            ];
+        } else {
+            return [
+                'error' => 'Chave de autenticação inválida.',
+                'warning' => null,
+                'salt' => $salt
             ];
         }
     }

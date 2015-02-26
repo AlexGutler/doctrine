@@ -79,7 +79,10 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
-$app['upload_folder'] = __DIR__ . '/public/imagens';
+$app['upload_folder'] = __DIR__ . '/public_html/imagens';
+
+//$app['asset.host'] = 'http://localhost/';
+$app['asset.host'] = 'http://algusolucoes.esy.es/';
 
 /* CONFIGURAÇÃO DE DEPENDENCIAS - PIMPLE */
 // criando a conexão

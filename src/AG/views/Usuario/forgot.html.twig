@@ -9,17 +9,17 @@
 
     <section class="container">
         <form class="form-horizontal" method="POST" action="{{ path('forgot_password') }}">
-            {% if error != 'default' %}
+            {% if error != null %}
                 <div class="form-group">
-                    <div class="col-sm-4">
-                        <span class="alert-danger">{{ error }}</span>
+                    <div class="col-sm-4 alert-danger">
+                        <span class="">{{ error }}</span>
                     </div>
                 </div>
             {% endif %}
-            {% if warning != 'default' %}
+            {% if warning != null %}
                 <div class="form-group">
-                    <div class="col-sm-4">
-                        <span class="alert-success">{{ warning }}</span>
+                    <div class="col-sm-4 alert-success">
+                        <span class="">{{ warning }}</span>
                     </div>
                 </div>
             {% endif %}

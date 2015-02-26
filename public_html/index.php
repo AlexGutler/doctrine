@@ -53,6 +53,6 @@ $app->error(function (\Exception $e, $code) use ($app) {
     //return new Response('Desculpe, aconteceu algo errado.<br> Erro: '.$e->getMessage().' - Code: '.$e->getCode(), $code);
 });
 
-//Request::enableHttpMethodParameterOverride();
+Request::enableHttpMethodParameterOverride();
 
 $app->run();

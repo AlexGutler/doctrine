@@ -77,7 +77,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
-$app['upload_folder'] = __DIR__ . '/public/imagens';
+$app['upload_folder'] = __DIR__ . '/public_html/imagens';
 
 /* CONFIGURAÇÃO DE DEPENDENCIAS - PIMPLE */
 // criando a conexão

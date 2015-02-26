@@ -33,7 +33,7 @@ class UsuarioControllerProvider implements ControllerProviderInterface
             return $this->updateAction($app, $request);
         })->bind('account')->method('GET|PUT');
 
-        $controllers->match("/drop", function(Request $request, $id) use ($app){
+        $controllers->match("/drop/{id}", function(Request $request, $id) use ($app){
             return $this->deleteAction($app, $request, $id);
         })->bind('drop')->method('GET|DELETE');
 
@@ -41,13 +41,12 @@ class UsuarioControllerProvider implements ControllerProviderInterface
             return $this->forgotAction($app, $request);
         })->bind('forgot_password')->method('GET|POST');
 
+        $controllers->match("/reset_password/{salt}", function($salt, Request $request) use ($app){
+            return $this->resetPssword($app, $request, $salt);
+        })->bind('reset_password')->method('GET|PUT');
+
         return $controllers;
     }
-
-//    public function indexAction(Application $app)
-//    {
-//        return $app['twig']->render('Usuario/index.html.twig');
-//    }
 
     public function loginAction(Application $app, Request $request)
     {
@@ -57,7 +56,7 @@ class UsuarioControllerProvider implements ControllerProviderInterface
             if($result){
                 // criar a sessão
                 $app['session']->set(
-                    'user', 
+                    'user',
                     [
                         'id' => $result['id'],
                         'username' => $result['username'],
@@ -121,7 +120,10 @@ class UsuarioControllerProvider implements ControllerProviderInterface
         }
 
         $usuario = $app['usuarioService']->fetch();
-        return $app['twig']->render('Usuario/editar.html.twig', array('usuario' => $usuario));
+        return $app['twig']->render(
+            'Usuario/editar.html.twig',
+            array('usuario' => $usuario)
+        );
     }
 
     public function deleteAction(Application $app, Request $request, $id)
@@ -132,7 +134,10 @@ class UsuarioControllerProvider implements ControllerProviderInterface
         }
 
         $usuario = $app['usuarioService']->fetch($id);
-        return $app['twig']->render('Usuario/excluir.html.twig', array('usuario' => $usuario));
+        return $app['twig']->render(
+            'Usuario/excluir.html.twig',
+            array('usuario' => $usuario)
+        );
     }
 
     public function logoutAction(Application $app)
@@ -144,9 +149,45 @@ class UsuarioControllerProvider implements ControllerProviderInterface
     public function forgotAction(Application $app, Request $request)
     {
         if($request->isMethod('POST')){
-            $result = $app['usuarioService']->forgot($request);
-            return $app['twig']->render('Usuario/forgot.html.twig', [$result]);
+            $result = $app['usuarioService']->forgot($request, $app);
+            return $app['twig']->render(
+                'Usuario/forgot.html.twig',
+                [
+                    'warning' => $result['warning'],
+                    'error' => $result['error']
+                ]
+            );
         }
-        return $app['twig']->render('Usuario/forgot.html.twig', ['warning' => null, 'error' => null]);
+        return $app['twig']->render(
+            'Usuario/forgot.html.twig',
+            [
+                'warning' => null,
+                'error' => null
+            ]
+        );
+    }
+
+    public function resetPssword(Application $app, Request $request, $salt)
+    {
+        if($request->isMethod('PUT')){
+            $result = $app['usuarioService']->resetPassword($request);
+            return $app['twig']->render(
+                'Usuario/resetpassword.html.twig',
+                [
+                    'error' => $result['error'],
+                    'warning' => $result['warning'],
+                    'salt' => $salt
+                ]
+            );
+        }
+
+        return $app['twig']->render(
+            'Usuario/resetpassword.html.twig',
+            [
+                'error' => null,
+                'warning' => null,
+                'salt' => $salt
+            ]
+        );
     }
 }
