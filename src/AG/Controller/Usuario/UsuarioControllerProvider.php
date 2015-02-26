@@ -37,6 +37,10 @@ class UsuarioControllerProvider implements ControllerProviderInterface
             return $this->deleteAction($app, $request, $id);
         })->bind('drop')->method('GET|DELETE');
 
+        $controllers->match('/password', function(Request $request) use ($app){
+            return $this->forgotAction($app, $request);
+        })->bind('forgot_password')->method('GET|POST');
+
         return $controllers;
     }
 
@@ -52,7 +56,14 @@ class UsuarioControllerProvider implements ControllerProviderInterface
 
             if($result){
                 // criar a sessão
-                $app['session']->set('user', array('username' => $result['username'], 'id' => $result['id']));
+                $app['session']->set(
+                    'user', 
+                    [
+                        'id' => $result['id'],
+                        'username' => $result['username'],
+                        'roles' => $result['roles']
+                    ]
+                );
             } else {
                 // renderizar a página de login com error
                 return $app['twig']->render(
@@ -110,7 +121,7 @@ class UsuarioControllerProvider implements ControllerProviderInterface
         }
 
         $usuario = $app['usuarioService']->fetch();
-        return $app['twig']->render('Usuario/editar.twig', array('usuario' => $usuario));
+        return $app['twig']->render('Usuario/editar.html.twig', array('usuario' => $usuario));
     }
 
     public function deleteAction(Application $app, Request $request, $id)
@@ -121,7 +132,7 @@ class UsuarioControllerProvider implements ControllerProviderInterface
         }
 
         $usuario = $app['usuarioService']->fetch($id);
-        return $app['twig']->render('Usuario/excluir.twig', array('usuario' => $usuario));
+        return $app['twig']->render('Usuario/excluir.html.twig', array('usuario' => $usuario));
     }
 
     public function logoutAction(Application $app)
@@ -130,5 +141,12 @@ class UsuarioControllerProvider implements ControllerProviderInterface
         return $app->redirect('/');
     }
 
-
+    public function forgotAction(Application $app, Request $request)
+    {
+        if($request->isMethod('POST')){
+            $result = $app['usuarioService']->forgot($request);
+            return $app['twig']->render('Usuario/forgot.html.twig', [$result]);
+        }
+        return $app['twig']->render('Usuario/forgot.html.twig', ['warning' => null, 'error' => null]);
+    }
 }

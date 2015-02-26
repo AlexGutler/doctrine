@@ -75,6 +75,58 @@ class UsuarioService
         }
     }
 
+    public function forgot(Request $request)
+    {
+        $email = $request->get('email');
+        $repository = $this->em->getRepository('AG\Entity\Usuario\Usuario');
+
+        $this->usuario = $repository->findOneByEmail($email);
+
+        if($this->usuario){
+            //1 – Definimos Para quem vai ser enviado o email
+            $para = $email;
+            $nome = $this->usuario->getUsername();
+            $assunto = 'Recuperação de Senha AG';
+
+            $mensagem = 'Link com o salt apontando para uma rota que fará a redefinição do email ao clicar';
+
+            //2 - resgatar o nome digitado no formulário e  grava na variavel $nome
+            // 3 - resgatar o assunto digitado no formulário e  grava na variavel //$assunto
+            //4 – Agora definimos a  mensagem que vai ser enviado no e-mail
+            $msg_email = "<strong>Nome:  </strong>".$nome;
+            $msg_email .= "<br/><strong>Email:  </strong>".$email;
+            $msg_email .= "<br/><strong>Assunto:  </strong>".$assunto;
+            $msg_email .= "<br/><strong>Mensagem: </strong>".$mensagem;
+
+            //5 – agora inserimos as codificações corretas e  tudo mais.
+            $headers =  "Content-Type:text/html; charset=UTF-8\n";
+            $headers .= "From: ".$nome." <$email> Reply-to: $para \n"; //Vai ser //mostrado que  o email partiu deste email e seguido do nome
+            /* $headers .= "X-Sender:  <sistema@dominio.com.br>\n"; //email do servidor //que enviou
+             $headers .= "X-Mailer: PHP  v".phpversion()."\n";
+             $headers .= "X-IP:  ".$_SERVER['REMOTE_ADDR']."\n";
+             $headers .= "Return-Path:  <sistema@dominio.com.br>\n"; //caso a msg //seja respondida vai para  este email. */
+            $headers .= "MIME-Version: 1.0\n";
+
+            $envio = mail($para, $assunto, $msg_email, $headers);  //função que faz o envio do emai
+            if ($envio){
+                return [
+                    'warning' => 'Lhe enviamos com as instruções para redefinir sua senha.',
+                    'error' => null
+                ];
+            } else {
+                return [
+                    'warning' => null,
+                    'error' => 'Ocorreu um erro ao tentar lhe enviar um email com as instruços para redefinir sua senha. tente novamente mais tarde.'
+                ];
+            }
+        } else {
+            return [
+                'error' => 'O email informado não foi encontrado. Certifique-se de ter digitado corretamente seu email.',
+                'warning' => null
+            ];
+        }
+    }
+
     public function delete($id)
     {
         $this->usuario = $this->em->getReference('AG\Entity\Usuario\Usuario', $id);

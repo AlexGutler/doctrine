@@ -12,9 +12,7 @@
             {% if error != null %}
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <div class="alert alert-danger">
-                            {{ error }}
-                        </div>
+                        <div class="alert alert-danger">{{ error }}</div>
                     </div>
                 </div>
             {% endif %}
@@ -37,7 +35,7 @@
             </div>
         </form>
         <section class="container">
-            <span>Não possui uma conta? <a href="{{ path('register') }}"><span>Crie uma conta AG agora.</span></a> </span>
+            <span>Não possui uma conta? <a href="{{ path('register') }}"><span>Crie uma conta agora.</span></a> </span>
         </section>
     </section>
 {% endblock %}

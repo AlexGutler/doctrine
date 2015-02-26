@@ -28,9 +28,9 @@ $app->get("/", function() use($app){
 //    $repo->createAdminUser('admin', 'admin');
 //});
 
-$app->get("/resetting/request", function() use($app){
-    return "Esqueci minha senha.";
-})->bind('forgot_password');
+//$app->get("/resetting/request", function() use($app){
+//    return "Esqueci minha senha.";
+//})->bind('forgot_password');
 
 // cria as rotas
 $routes = new Routes();
