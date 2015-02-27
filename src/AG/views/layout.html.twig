@@ -39,9 +39,16 @@
                     <li class="{% block classcategorias %}{% endblock %}"><a href="{{ path('categorias') }}">Categorias</a></li>
                     <li class="{% block classtags %}{% endblock %}"><a href="{{ path('tags') }}">Tags</a></li>
                 </ul>
+                {#<ul class="nav navbar-nav navbar-right">#}
+                    {#{% if app.security.token is not null and is_granted('ROLE_ADMIN') %} {# (IS_AUTHENTICATED_FULLY) #}
+                        {#<li class="logout"><a href="{{ path('ag_logout') }}">Logout</a></li>#}
+                    {#{% else %}#}
+                        {#<li class="login"><a href="{{ path('login') }}">Login</a></li>#}
+                    {#{% endif %}#}
+                {#</ul>#}
                 <ul class="nav navbar-nav navbar-right">
-                    {% if app.security.token is not null and is_granted('ROLE_ADMIN') %} {# (IS_AUTHENTICATED_FULLY) #}
-                        <li class="logout"><a href="{{ path('ag_logout') }}">Logout</a></li>
+                    {% if app.session.get('user') is not null %}
+                        <li class="logout"><a href="{{ path('logout') }}">Logout</a></li>
                     {% else %}
                         <li class="login"><a href="{{ path('login') }}">Login</a></li>
                     {% endif %}

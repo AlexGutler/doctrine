@@ -1,0 +1,50 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}AG || Autenticação{% endblock %}
+
+{% block content %}
+    <header class="container">
+        <h1>FAÇA O LOGIN ABAIXO</h1>
+    </header>
+
+    <section class="container">
+        <form class="form-horizontal" method="post" action="{{ path('login') }}">
+            {% if error != null %}
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <div class="alert alert-danger">{{ error }}</div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="username"  name="username" value="{{ username }}" placeholder="Username" required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <a href="{{ path('forgot_password') }}" class="col-sm-4">Esqueci minha senha</a>
+            </div>
+            <div class="form-group">
+                <input type="hidden" id="_method" name="_method" value="POST"/>
+                <button type="submit" class="col-sm-4 btn btn-success">LOGIN</button>
+            </div>
+        </form>
+        <section class="container">
+            <span>Não possui uma conta? <a href="{{ path('register') }}"><span>Crie uma conta agora.</span></a> </span>
+        </section>
+    </section>
+{% endblock %}
+
+{% block form %}
+
+{% endblock %}
+
+{% block classhome %}{% endblock %}
+{% block classprodutos %}{% endblock %}
+{% block classcategorias %}{% endblock %}
+{% block classtags %}{% endblock %}

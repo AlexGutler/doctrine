@@ -13,151 +13,181 @@ class UsuarioControllerProvider implements ControllerProviderInterface
     {
         $controllers = $app['controllers_factory'];
 
-        // listagem de produtos
-        $controllers->get('/', function (Application $app) {
-            // direcinar para pagina 1
-            return $app->redirect('pag/1');
+//        $controllers->get('/', function() use ($app){
+//            return $this->indexAction($app);
+//        })->bind('usuarios');
 
-        })->bind('produtos');
+        $controllers->match("/login", function(Request $request) use ($app){
+            return $this->loginAction($app, $request);
+        })->bind('login')->method('GET|POST');
 
-        // PAGINATION DOS PRODUTOS
-        $controllers->get('/pag/{id}', function (Application $app, $id) {
-            // definir o limite de registros por página e o registro inicial da busca (offset)
-            if(!isset($id)){$id = 1;}
+        $controllers->get("/logout", function() use ($app){
+            return $this->logoutAction($app);
+        })->bind('logout');
 
-            $limit = 5; // limite de registros por página
-            $offset = ($id - 1) * $limit; // buscar a partir do registro
+        $controllers->match("/register", function(Request $request) use ($app){
+            return $this->createAction($app, $request);
+        })->bind('register')->method('GET|POST');
 
-            // buscar o número de registros para calcular a quantidade de páginas
-            $pags = $app['produtoService']->fetchAll();
-            $numPages = ceil(count($pags)/$limit); // arredondar para cima para ter o número de páginas
+        $controllers->match("/account", function(Request $request) use ($app){
+            return $this->updateAction($app, $request);
+        })->bind('account')->method('GET|PUT');
 
-            // busca os produtos
-            $produtos = $app['produtoService']->fetchPagination($offset, $limit);
+        $controllers->match("/drop/{id}", function(Request $request, $id) use ($app){
+            return $this->deleteAction($app, $request, $id);
+        })->bind('drop')->method('GET|DELETE');
 
-            $tags = $app['tagService']->fetchAll();
+        $controllers->match('/password', function(Request $request) use ($app){
+            return $this->forgotAction($app, $request);
+        })->bind('forgot_password')->method('GET|POST');
 
-            /* passar os produtos, o deleted, o número de páginas, a página ativa */
-            return $app['twig']->render(
-                'Produto/index.html.twig',
-                ['produtos' => $produtos, 'tags' => $tags, 'paginas' => $numPages, 'activepage' => $id]
-            );
-        })->bind('produtos-pagination');
-
-        // executa e exibe os resultados encontrados da busca pelo nome
-        $controllers->post("/find", function(Request $request) use($app){
-            $produtos = $app['produtoService']->buscarProduto($request->get('nome'));
-
-            $tags = $app['tagService']->fetchAll();
-
-            /* passar os produtos, o deleted, o número de páginas */
-            return $app['twig']->render(
-                'Produto/index.html.twig',
-                ['produtos' => $produtos, 'tags' => $tags, 'paginas' => 0]
-            );
-        })->bind('produto-find');
-
-        // formulario para cadastro de novo produto
-        $controllers->get("/novo", function() use($app){
-            $categorias = $app['categoriaService']->fetchAll();
-            $tags = $app['tagService']->fetchAll();
-
-            return $app['twig']->render(
-                'Produto/novo.html.twig',
-                [
-                    'id' => null,
-                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null, 'file' => null),
-                    'produto' => array('nome' => null, 'descricao' => null, 'valor' => null, 'categoria' => null, 'tags' => null),
-                    'categorias' => $categorias,
-                    'tags' => $tags
-                ]);
-        })->bind('produto-novo');
-
-        // post dos dados do novo produto
-        $controllers->post("/novo", function(Request $request) use($app) {
-            $result = $app['produtoService']->insert($request);
-
-            if (!is_array($result)) {
-                return $app->redirect('/ag/produtos');
-            } else {
-                $categorias = $app['categoriaService']->fetchAll();
-                $tags = $app['tagService']->fetchAll();
-
-                return $app['twig']->render('Produto/novo.html.twig',
-                    [
-                        'id' => null,
-                        'errors' => $result,
-                        'produto' => $request->request->all(),
-                        'categorias' => $categorias,
-                        'tags' => $tags
-                    ]);
-            }
-        })->bind('produto-salvar');
-
-        // deletar produto
-        $controllers->get('/{id}/deletar', function($id) use($app){
-            $produto = $app['produtoService']->fetch($id);
-            $categorias = $app['categoriaService']->fetchAll();
-            $tags = $app['tagService']->fetchAll();
-
-            return $app['twig']->render('Produto/excluir.html.twig',
-                [
-                    'id' => $id,
-                    'produto' => $produto,
-                    'categorias' => $categorias,
-                    'tags' => $tags
-                ]);
-        })->bind('produto-deletar-form');
-
-        // deletar produto
-        $controllers->post('/{id}/deletar', function($id) use($app){
-            $result = $app['produtoService']->delete($id);
-            if ($result)
-            {
-                return $app->redirect('/ag/produtos');
-            } else {
-                $app->abort(500, "Erro ao deletar o produto");
-            }
-        })->bind('produto-deletar');
-
-        // editar produto
-        $controllers->get("/{id}/editar", function($id) use($app){
-            $produto = $app['produtoService']->fetch($id);
-            $categorias = $app['categoriaService']->fetchAll();
-            $tags = $app['tagService']->fetchAll();
-
-            return $app['twig']->render('Produto/editar.html.twig',
-                [
-                    'id' => $id,
-                    'produto' => $produto,
-                    'errors' => array('nome' => null, 'descricao' => null, 'valor' => null, 'file' => null),
-                    'categorias' => $categorias,
-                    'tags' => $tags
-                ]);
-        })->bind('produto-editar');
-
-        // post dos dados da edição
-        $controllers->post("/{id}/editar", function(Request $request, $id) use($app) {
-            $result = $app['produtoService']->update($request, $id);
-
-            if (!is_array($result)) {
-                return $app->redirect('/ag/produtos');
-            } else {
-                $produto = $app['produtoService']->fetch($id);
-                $categorias = $app['categoriaService']->fetchAll();
-                $tags = $app['tagService']->fetchAll();
-
-                return $app['twig']->render('Produto/editar.html.twig',
-                    [
-                        'id' => $id,
-                        'produto' => $produto,
-                        'errors' => $result,
-                        'categorias' => $categorias,
-                        'tags' => $tags
-                    ]);
-            }
-        })->bind('produto-atualizar');
+        $controllers->match("/reset_password/{salt}", function($salt, Request $request) use ($app){
+            return $this->resetPssword($app, $request, $salt);
+        })->bind('reset_password')->method('GET|PUT');
 
         return $controllers;
+    }
+
+    public function loginAction(Application $app, Request $request)
+    {
+        if($request->isMethod('POST')){
+            $result = $app['usuarioService']->login($request);
+
+            if($result){
+                // criar a sessão
+                $app['session']->set(
+                    'user',
+                    [
+                        'id' => $result['id'],
+                        'username' => $result['username'],
+                        'roles' => $result['roles']
+                    ]
+                );
+            } else {
+                // renderizar a página de login com error
+                return $app['twig']->render(
+                    'Usuario/login.html.twig',
+                    [
+                        'error' => 'Usuário ou senha inválidos.',
+                        'username' => $request->get('username'),
+                    ]
+                );
+            }
+            return $app->redirect('/');
+        }
+
+        return $app['twig']->render(
+            'Usuario/login.html.twig',
+            [
+                'error' => null,
+                'username' => null
+            ]
+        );
+    }
+
+    public function createAction(Application $app, Request $request)
+    {
+        if($request->isMethod('POST')){
+            $result = $app['usuarioService']->insert($request);
+
+            if(!is_array($result)){
+                return $app->redirect('/');
+            } else {
+                // renderizar a página de novo com errors
+                return $app['twig']->render(
+                    'Usuario/novo.html.twig',
+                    [
+                        'errors' => $result,
+                        'usuario' => $request->request->all(),
+                    ]
+                );
+            }
+        }
+        return $app['twig']->render(
+            'Usuario/novo.html.twig',
+            [
+                'errors' => array('email' => null, 'username' => null, 'password' => null, 'role' => null),
+                'usuario' => array('email' => null, 'username' => null, 'password' => null, 'role' => 'ROLE_USER'),
+            ]
+        );
+    }
+
+    public function updateAction(Application $app, Request $request)
+    {
+        if($request->isMethod('PUT')){
+            $app['usuarioService']->insert($request);
+            return $app->redirect('/ag/usuarios');
+        }
+
+        $usuario = $app['usuarioService']->fetch();
+        return $app['twig']->render(
+            'Usuario/editar.html.twig',
+            array('usuario' => $usuario)
+        );
+    }
+
+    public function deleteAction(Application $app, Request $request, $id)
+    {
+        if($request->isMethod('DELETE')){
+            $app['usuarioService']->delete($id);
+            return $app->redirect('/ag/usuarios');
+        }
+
+        $usuario = $app['usuarioService']->fetch($id);
+        return $app['twig']->render(
+            'Usuario/excluir.html.twig',
+            array('usuario' => $usuario)
+        );
+    }
+
+    public function logoutAction(Application $app)
+    {
+        $app['session']->remove('user');
+        return $app->redirect('/');
+    }
+
+    public function forgotAction(Application $app, Request $request)
+    {
+        if($request->isMethod('POST')){
+            $result = $app['usuarioService']->forgot($request, $app);
+            return $app['twig']->render(
+                'Usuario/forgot.html.twig',
+                [
+                    'warning' => $result['warning'],
+                    'error' => $result['error']
+                ]
+            );
+        }
+        return $app['twig']->render(
+            'Usuario/forgot.html.twig',
+            [
+                'warning' => null,
+                'error' => null
+            ]
+        );
+    }
+
+    public function resetPssword(Application $app, Request $request, $salt)
+    {
+        if($request->isMethod('PUT')){
+            $result = $app['usuarioService']->resetPassword($request);
+            return $app['twig']->render(
+                'Usuario/resetpassword.html.twig',
+                [
+                    'error' => $result['error'],
+                    'warning' => $result['warning'],
+                    'salt' => $salt
+                ]
+            );
+        }
+
+        return $app['twig']->render(
+            'Usuario/resetpassword.html.twig',
+            [
+                'error' => null,
+                'warning' => null,
+                'salt' => $salt
+            ]
+        );
     }
 }

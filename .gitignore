@@ -5,3 +5,4 @@ composer.phar
 silex-master.zip
 bin
 /nbproject/private/
+bootstrap-security.php

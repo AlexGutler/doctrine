@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\table("usuarios")
  * @ORM\Entity(repositoryClass="AG\Entity\Usuario\UsuarioRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Usuario
 {
@@ -39,19 +40,6 @@ class Usuario
      */
     protected $salt;
 
-    public function __construct(){
-        $this->createAt = new \DateTime();
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function encryptPass()
-    {
-        $this->setPassword(password_hash($this->getPassword(), PASSWORD_DEFAULT));
-    }
-
     /**
      * @ORM\PrePersist
      */
@@ -61,6 +49,24 @@ class Usuario
         // aqui eu poderia enviar um código de validação por email...
     }
 
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function encryptPass()
+    {
+//        $options = [
+//            'cost' => 12,
+//            'salt' => $this->getSalt()
+//        ];
+//        $passHash = password_hash($this->getPassword(), PASSWORD_BCRYPT, $options);
+//        $this->setPassword($passHash);
+        $this->setPassword(password_hash($this->getPassword(), PASSWORD_DEFAULT));
+    }
+
+    public function __construct(){
+        $this->createAt = new \DateTime();
+    }
 
     /**
      * @return mixed

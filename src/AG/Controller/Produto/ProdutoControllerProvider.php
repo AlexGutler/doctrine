@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Response,
 
 class ProdutoControllerProvider implements ControllerProviderInterface
 {
+    protected $before;
+    public function __construct($before){
+        $this->before = $before;
+    }
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
@@ -18,7 +22,7 @@ class ProdutoControllerProvider implements ControllerProviderInterface
             // direcinar para pagina 1
             return $app->redirect('pag/1');
 
-        })->bind('produtos');
+        })->bind('produtos')->before($this->before);
 
         // PAGINATION DOS PRODUTOS
         $controllers->get('/pag/{id}', function (Application $app, $id) {
@@ -83,14 +87,16 @@ class ProdutoControllerProvider implements ControllerProviderInterface
                 $categorias = $app['categoriaService']->fetchAll();
                 $tags = $app['tagService']->fetchAll();
 
-                return $app['twig']->render('Produto/novo.html.twig',
+                return $app['twig']->render(
+                    'Produto/novo.html.twig',
                     [
                         'id' => null,
                         'errors' => $result,
                         'produto' => $request->request->all(),
                         'categorias' => $categorias,
                         'tags' => $tags
-                    ]);
+                    ]
+                );
             }
         })->bind('produto-salvar');
 
